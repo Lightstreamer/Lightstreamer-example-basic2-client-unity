@@ -134,10 +134,10 @@ The adapters.xml file for the Portfolio Demo, should look like:
 To build your own version of `UnityDemo.exe`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Weswit/Lightstreamer-example-StockList-client-unity#install) section above, follow these steps:
 
 * A Unity 2017 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
-* Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-StockList-client-unity`.
+* Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
 * Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
-* Please note that by the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the Hostname parameter to 'http://push.lightstreamer.com' or 'http://localhost:8080' depending you want to use yur local instance of Lightstremaer server or our public installations.
+* Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the Hostname parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
 
 ## See Also
 
