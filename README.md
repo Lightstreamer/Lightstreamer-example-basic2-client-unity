@@ -15,7 +15,7 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Details
 
-The demo intends to show a reference pattern for using [Lightstreamer .NET client library](https://www.lightstreamer.com/repo/distros/Lightstreamer_Allegro-Presto-Vivace_6_0_3_20160905.zip%23/Lightstreamer/DOCS-SDKs/sdk_client_dotnet/) in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
+The demo intends to show a reference pattern for using [Lightstreamer Unity client library](https://www.lightstreamer.com/repo/distros/Lightstreamer_7_0_0_b2_20171220.zip%23/Lightstreamer/DOCS-SDKs/sdk_client_unity/) in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
 Specifically, the demo includes two `cube` 3D ojects that change their size and color according to the real-time information received through the StockList Data Adapter, the same of the [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
 In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
 
