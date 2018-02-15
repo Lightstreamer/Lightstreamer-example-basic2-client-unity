@@ -126,7 +126,7 @@ The adapters.xml file for the Portfolio Demo, should look like:
   </adapters_conf>
 ```
 * Launch Lightstreamer Server.
-* Download the `deploy.zip` file, which you can find in the [deploy release](https://github.com/Weswit/Lightstreamer-example-StockList-client-unity/releases) of this project and extract the `BasicUnityDemo` folder.
+* Download the `deploy.zip` file, which you can find in the [deploy release](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases) of this project and extract the `BasicUnityDemo` folder.
 * Launch `BasicUnityDemo.exe` (please note that the demo tries to connect to http://localhost:8080).
 
 ## Build
