@@ -1,6 +1,6 @@
 # Lightstreamer - Basic Demo - Unity Client
 
-<!-- START DESCRIPTION lightstreamer-example-stocklist-client-unity -->
+<!-- START DESCRIPTION lightstreamer-example-basic2-client-unity -->
 
 This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 2017 Development platform](https://unity3d.com/).<br>
 
@@ -15,14 +15,14 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Details
 
-The demo intends to show a reference pattern for using [Lightstreamer Unity client library](https://www.lightstreamer.com/repo/distros/Lightstreamer_7_0_0_b2_20171220.zip%23/Lightstreamer/DOCS-SDKs/sdk_client_unity/) in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
+The demo intends to show a reference pattern for using Lightstreamer Unity Client Library, available in *Lightstreamer Server Version 7.0 or greater* from [Lightstreamer Download page](http://www.lightstreamer.com/download.htm), in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
 Specifically, the demo includes two `cube` 3D ojects that change their size and color according to the real-time information received through the StockList Data Adapter, the same of the [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
 In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
 
 All the objects who want to communicate with the Lightstreamer server should be children of the same parent object, in this demo called 'World', and be tagged with a label that starts with the string 'lightstreamer'.
 To 'World' has been added the `LighstreamerClientAsset` component, which will take care of opening a Lightstreamer session with the information provided in the parameters: Hostname and AdapterSet.
 
-All the child objects can ask to open  a subscription versus the Lightstreamer server by setting these parameters of the `LighstreamerAsset` component: ItemName, Shcema, DataAdapter.
+All the child objects can ask to open  a subscription versus the Lightstreamer server by setting these parameters of the `LighstreamerAsset` component: ItemName, Schema, DataAdapter.
 The LightstreamerClientAsset component of the World object will perform all the subscriptions specified by child objects, and will communicate with them through two types of messages :
 
 * RTStatus - a message of this type provides information about the status of communication with the Lightstreamer server.
@@ -44,11 +44,11 @@ In addition this class read the Input and sends the typed message to the server.
 
 Check out the sources for further explanations. The Lightstreamer Documentation is available at: http://www.lightstreamer.com/doc<br>
 
-<i>NOTE: Not all the functionalities of the modified Lightstreamer .NET Client Library are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Client API](http://www.lightstreamer.com/docs/client_dotnet_api/frames.html) as a reference. </i>
+<i>NOTE: Not all the functionalities of the Lightstreamer Unity Client Library are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer Unity Client API](http://docs.lightstreamer.com/docs/client_unity_api/) as a reference. </i>
 
 For any inquiry, please email support@lightstreamer.com.
 
-<!-- END DESCRIPTION lightstreamer-example-stocklist-client-unity -->
+<!-- END DESCRIPTION lightstreamer-example-basic2-client-unity -->
 
 ## Install
 
@@ -131,7 +131,7 @@ The adapters.xml file for the Portfolio Demo, should look like:
 
 ## Build
 
-To build your own version of `UnityDemo.exe`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Weswit/Lightstreamer-example-StockList-client-unity#install) section above, follow these steps:
+To build your own version of `UnityDemo.exe`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity#install) section above, follow these steps:
 
 * A Unity 2017 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
@@ -157,5 +157,5 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer .NET Client API version 2.1 or newer.
+* Compatible with Lightstreamer Unity Client API version 2.1.2 or newer.
 * For Lightstreamer Allegro (+ .NET Client API support), Presto, Vivace.
