@@ -158,4 +158,4 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 ## Lightstreamer Compatibility Notes
 
 * Compatible with Lightstreamer Unity Client API version 2.1.2 or newer.
-* For Lightstreamer Allegro (+ .NET Client API support), Presto, Vivace.
+* For Lightstreamer Server version 7.0 or greater. Ensure that Unity Client API is supported by Lightstreamer Server license configuration.
