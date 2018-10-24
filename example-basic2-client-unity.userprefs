@@ -1,10 +1,11 @@
 ﻿<Properties StartupItem="example-basic2-client-unity.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\LightstreamerCubeAsset.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\LightstreamerClientAsset.cs">
     <Files>
       <File FileName="Assets\LightstreamerAsset.cs" Line="1" Column="1" />
       <File FileName="Assets\LightstreamerClientAsset.cs" Line="1" Column="1" />
       <File FileName="Assets\LightstreamerCubeAsset.cs" Line="1" Column="1" />
+      <File FileName="Assets\ConnectionListener.cs" Line="24" Column="45" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

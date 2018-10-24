@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNet.Client;
+using Lightstreamer.DotNetStandard.Client;
 using System;
 using UnityEngine.UI;
 
@@ -72,7 +72,9 @@ public class LightstreamerCubeAsset : LightstreamerAsset
                 float ftmp = 1;
                 float.TryParse(update.GetNewValue(4), out ftmp);
 
-                this.scale = 3.0F + (ftmp * 9.0F / 100.0F);
+                Debug.Log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " + ftmp);
+
+                this.scale = 3.0F + (3.0F * ftmp / 5000.0F);
 
                 Debug.Log("New scale: " + this.scale);
             }

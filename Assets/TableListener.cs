@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNet.Client;
+using Lightstreamer.DotNetStandard.Client;
 
 public class StocklistHandyTableListener : IHandyTableListener
 {

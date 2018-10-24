@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNet.Client;
+using Lightstreamer.DotNetStandard.Client;
 using System;
 
 public class LightstreamerMsgAsset : LightstreamerAsset

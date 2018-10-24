@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Lightstreamer.DotNet.Client;
+using Lightstreamer.DotNetStandard.Client;
 using UnityEngine;
 using System.Threading;
 using System.Collections;
@@ -13,8 +13,9 @@ public class LightstreamerClientAsset : MonoBehaviour
     private static LSClient client = null;
     private static ConnectionInfo cInfo;
     private static Boolean goFlag = false;
-    
-    public String Hostname = "https://push.lightstreamer.com";
+
+    // public String Hostname = "https://push.lightstreamer.com/";
+    public String Hostname = "http//push.lightstreamer.com/";
     public String AdapterSet = "DEMO";
 
     //private IUpdateInfo nextUpdate = null;
