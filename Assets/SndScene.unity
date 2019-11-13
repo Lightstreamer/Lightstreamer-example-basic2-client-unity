@@ -575,8 +575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d79ec3be3c352ec429f5f884c46bf71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hostname: http://push.lightstreamer.com/
-  AdapterSet: DEMO
+  pushUrl: http://localhost:8080/
+  adaptersSet: DEMO
 --- !u!1 &2109691629
 GameObject:
   m_ObjectHideFlags: 0

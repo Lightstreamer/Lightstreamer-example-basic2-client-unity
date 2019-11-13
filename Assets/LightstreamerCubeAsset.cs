@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNetStandard.Client;
+using com.lightstreamer.client;
 using System;
 using UnityEngine.UI;
 
@@ -42,16 +42,16 @@ public class LightstreamerCubeAsset : LightstreamerAsset
         myObj.material.color = new Color32(Convert.ToByte(this.redC), Convert.ToByte(this.greenC), Convert.ToByte(this.blueC), 0);
     }
 
-    new public void RTUpdates(IUpdateInfo update)
+    new public void RTUpdates(ItemUpdate update)
     {
         if (!update.ItemName.Equals(this.ItemName)) return;
 
         if (update.ItemName.StartsWith("item"))
         {
-            if (update.IsValueChanged(2))
+            if (update.isValueChanged(2))
             {
                 float ftmp = 1;
-                float.TryParse(update.GetNewValue(2), out ftmp);
+                float.TryParse(update.getValue(2), out ftmp);
 
                 int iValue = Mathf.FloorToInt(ftmp);
                 int iValue2 = Mathf.FloorToInt(ftmp / 2.0F);
@@ -67,10 +67,10 @@ public class LightstreamerCubeAsset : LightstreamerAsset
                     this.blueC = (this.blueC + iValue2) % 255;
                 }
             }
-            if (update.IsValueChanged(4))
+            if (update.isValueChanged(4))
             {
                 float ftmp = 1;
-                float.TryParse(update.GetNewValue(4), out ftmp);
+                float.TryParse(update.getValue(4), out ftmp);
 
                 Debug.Log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " + ftmp);
 

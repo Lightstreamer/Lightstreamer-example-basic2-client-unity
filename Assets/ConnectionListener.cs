@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNetStandard.Client;
+using com.lightstreamer.client;
 
-public class StocklistConnectionListener : IConnectionListener
+public class StocklistConnectionListener : ClientListener
 {
     private LightstreamerClientAsset target = null;
 
@@ -10,65 +10,68 @@ public class StocklistConnectionListener : IConnectionListener
         this.target = target;
     }
 
-    void IConnectionListener.OnActivityWarning(bool warningOn)
+    void ClientListener.onListenEnd(LightstreamerClient client)
     {
-
-        this.target.ReStatusUpdate("WARN");
-        Debug.Log("Warn!");
-
+        Debug.Log("On Listen End.");
     }
 
-    void IConnectionListener.OnClose()
+    void ClientListener.onListenStart(LightstreamerClient client)
     {
-
-        this.target.ReStatusUpdate("CLOSE");
-        Debug.Log("Close!");
-        
+        Debug.Log("On Listen Start.");
     }
 
-    void IConnectionListener.OnConnectionEstablished()
+    void ClientListener.onPropertyChange(string property)
     {
-        Debug.Log("3..............");
+        Debug.Log("Property changed " + property + ".");
     }
 
-    void IConnectionListener.OnDataError(PushServerException e)
+    void ClientListener.onServerError(int errorCode, string errorMessage)
     {
-        Debug.Log("4..............");
+        Debug.Log("On Server Error:" + errorMessage);
     }
 
-    void IConnectionListener.OnEnd(int cause)
+    void ClientListener.onStatusChange(string status)
     {
-        Debug.Log("5..............");
-    }
-
-    void IConnectionListener.OnFailure(PushServerException e)
-    {
-        Debug.Log("6..............");
-    }
-
-    void IConnectionListener.OnFailure(PushConnException e)
-    {
-        Debug.Log("7..............");
-    }
-
-    void IConnectionListener.OnNewBytes(long bytes)
-    {
-        //
-    }
-
-    void IConnectionListener.OnSessionStarted(bool isPolling)
-    {
-        Debug.Log("9.............. OnSessionStarted: " + isPolling + "  -> " + System.Environment.TickCount);
-
-        if (isPolling)
+        Debug.Log("Status changed: " + status + "  -> " + System.Environment.TickCount + ".");
+        if (status.StartsWith("CONNECTED:WS"))
         {
-            this.target.ReStatusUpdate("POLLING");
-        }
-        else
-        {
-            this.target.ReStatusUpdate("STREAMING");
-        }
+            if (status.EndsWith("POLLING"))
+            {
+                this.target.ReStatusUpdate("POLLING");
+            }
+            else if (status.EndsWith("STREAMING"))
+            {
+                this.target.ReStatusUpdate("STREAMING");
+            }
 
-        this.target.GotConnection();
+            this.target.GotConnection();
+        }
+        else if (status.StartsWith("CONNECTED:HT"))
+        {
+            if (status.EndsWith("POLLING"))
+            {
+                this.target.ReStatusUpdate("POLLING");
+            }
+            else if (status.EndsWith("STREAMING"))
+            {
+                this.target.ReStatusUpdate("STREAMING");
+            }
+
+            this.target.GotConnection();
+        }
+        else if (status.StartsWith("CONNECTING"))
+        {
+            // ..
+        }
+        else if (status.StartsWith("DISCONNECTED"))
+        {
+            this.target.ReStatusUpdate("CLOSE");
+            Debug.Log("Close!");
+        }
+        else if (status.StartsWith("STALLED"))
+        {
+            this.target.ReStatusUpdate("WARN");
+            Debug.Log("Warn!");
+        }
     }
 }

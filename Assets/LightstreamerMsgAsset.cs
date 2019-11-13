@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNetStandard.Client;
+using com.lightstreamer.client;
 using System;
 
 public class LightstreamerMsgAsset : LightstreamerAsset
@@ -32,16 +32,16 @@ public class LightstreamerMsgAsset : LightstreamerAsset
 
     }
 
-    new public void RTUpdates(IUpdateInfo update)
+    new public void RTUpdates(ItemUpdate update)
     {
 
         if (!update.ItemName.Equals(this.ItemName)) return;
 
-        if (update.IsValueChanged("message"))
+        if (update.isValueChanged("message"))
         {
-            Debug.Log("Message:" + update.GetNewValue("message"));
+            Debug.Log("Message:" + update.getValue("message"));
 
-            GetComponent<TextMesh>().text = update.GetNewValue("message");
+            GetComponent<TextMesh>().text = update.getValue("message");
         }
     }
 }

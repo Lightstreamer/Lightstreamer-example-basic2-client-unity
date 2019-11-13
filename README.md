@@ -20,13 +20,13 @@ Specifically, the demo includes two `cube` 3D ojects that change their size and 
 In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
 
 All the objects who want to communicate with the Lightstreamer server should be children of the same parent object, in this demo called 'World', and be tagged with a label that starts with the string 'lightstreamer'.
-To 'World' has been added the `LighstreamerClientAsset` component, which will take care of opening a Lightstreamer session with the information provided in the parameters: Hostname and AdapterSet.
+To 'World' has been added the `LighstreamerClientAsset` component, which will take care of opening a Lightstreamer session with the information provided in the parameters: `Push Url` and `Adapters Set`.
 
-All the child objects can ask to open  a subscription versus the Lightstreamer server by setting these parameters of the `LighstreamerAsset` component: ItemName, Schema, DataAdapter.
+All the child objects can ask to open a [Subscription](https://lightstreamer.com/temp/temp_dotnet_unified_docs/api/com.lightstreamer.client.Subscription.html) versus the Lightstreamer server by setting these parameters of the `LighstreamerAsset` component: ItemName, Schema, DataAdapter.
 The LightstreamerClientAsset component of the World object will perform all the subscriptions specified by child objects, and will communicate with them through two types of messages :
 
 * RTStatus - a message of this type provides information about the status of communication with the Lightstreamer server.
-* RTUpdates - this type of messages brings a IUpdateInfo object of the Lightstreamer .NET clien library.
+* RTUpdates - this type of messages brings a [ItemUpdate](https://lightstreamer.com/temp/temp_dotnet_unified_docs/api/com.lightstreamer.client.ItemUpdate.html) object of the Lightstreamer .NET clien library.
 
 ### Dig the Code
 
@@ -39,12 +39,12 @@ In detail the files with the source code are:
 after verifying that the involved Item is the one specified in the ItemName parameter, change the color of the cube by setting parameterized rgb values based on the value of the last_price field (I admit this does not make much sense, it's just an example), and modify the cube size (y axis only) in pase to the pct_change field value.
 * `LightstreamerMsgAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated to a 3D Text object to display the message of an Item of Round-Trip demo specified in ItemName parameter.
 In addition this class read the Input and sends the typed message to the server.
-* `ConnectionListener.cs` is the implementation of `IConnectionListener` interface to handle notifications of connection activity and errors. 
-* `TableListener.cs` is the implementation of `IHandyTableListener ` interface to handle notification of data updates and subscription termination for a table.
+* `ConnectionListener.cs` is the implementation of [ClientListener](https://lightstreamer.com/temp/temp_dotnet_unified_docs/api/com.lightstreamer.client.ClientListener.html) interface to handle notifications of connection activity and errors. 
+* `TableListener.cs` is the implementation of [SubscriptionListener](https://lightstreamer.com/temp/temp_dotnet_unified_docs/api/com.lightstreamer.client.SubscriptionListener.html) interface to handle notification of data updates and subscription termination.
 
 Check out the sources for further explanations. The Lightstreamer Documentation is available at: http://www.lightstreamer.com/doc<br>
 
-<i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://www.lightstreamer.com/api/ls-dotnetstandard-client/latest/) as a reference. </i>
+<i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://lightstreamer.com/temp/temp_dotnet_unified_docs/api/Index.html) as a reference. </i>
 
 For any inquiry, please email support@lightstreamer.com.
 
@@ -135,10 +135,10 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 * A Unity 2018 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
-* Get the  binaries files of the library (`Lightstreamer_DotNet_Standard_Client.dll` and `Lightstreamer_DotNet_Standard_Client.pdb`) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) and put them in the `Assets` folder; then import it as a new Asset.
+* Get the  binaries files of the library (`Lightstreamer_DotNet_Standard_Client.dll` and `Lightstreamer_DotNet_Standard_Client.pdb`) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 5.0.0 or higher and put them in the `Assets\LightstreamerClient` new folder; then import it as a new Asset.
 * Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
-* Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the Hostname parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
+* Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
 
 ## See Also
 

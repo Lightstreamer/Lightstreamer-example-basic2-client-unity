@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Lightstreamer.DotNetStandard.Client;
+using com.lightstreamer.client;
 using System;
 
 public class LightstreamerAsset : MonoBehaviour
@@ -35,7 +35,7 @@ public class LightstreamerAsset : MonoBehaviour
 
     }
 
-    public void RTUpdates(IUpdateInfo update)
+    public void RTUpdates(ItemUpdate update)
     {
 
         Debug.Log("Received Update Message: " + update.ItemName + " == " + this.ItemName);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Lightstreamer.DotNetStandard.Client;
+using com.lightstreamer.client;
 using UnityEngine;
 using System.Threading;
 using System.Collections;
@@ -10,13 +10,10 @@ public class LightstreamerClientAsset : MonoBehaviour
 {
 
     private int StateMachine = 0;
-    private static LSClient client = null;
-    private static ConnectionInfo cInfo;
+    private static LightstreamerClient client = null;
+    public string pushUrl = "http://push.lightstreamer.com/";
+    public string adaptersSet = "DEMO";
     private static Boolean goFlag = false;
-
-    // public String Hostname = "https://push.lightstreamer.com/";
-    public String Hostname = "http//push.lightstreamer.com/";
-    public String AdapterSet = "DEMO";
 
     //private IUpdateInfo nextUpdate = null;
     private Queue nextUpdate = new Queue();
@@ -29,7 +26,7 @@ public class LightstreamerClientAsset : MonoBehaviour
         this.StateMachine = 2;
     }
 
-    public void ReDispatchUpdate(IUpdateInfo update)
+    public void ReDispatchUpdate(ItemUpdate update)
     {
         this.StateMachine = 2001;
         this.nextUpdate.Enqueue(update);
@@ -47,7 +44,8 @@ public class LightstreamerClientAsset : MonoBehaviour
     {
         if (client == null)
         {
-            client = new LSClient();
+            client = new LightstreamerClient(pushUrl, adaptersSet);
+            LightstreamerClient.setLoggerProvider(new LogProvider());
 
             Debug.Log("LSClient initialized!");
 
@@ -83,18 +81,17 @@ public class LightstreamerClientAsset : MonoBehaviour
 
                 if (ls != null)
                 {
-                    Debug.Log("My child: " + ls.ItemName);
+                    Debug.Log("My child: " + ls.ItemName.Split(',')[0]);
 
                     // Add info for a subscription
-                    ExtendedTableInfo tableInfo = new ExtendedTableInfo(
-                        ls.ItemName.Split(','),
-                       "MERGE",
-                       ls.Schema.Split(','),
-                       true)
+                    Subscription sub = new Subscription("MERGE", ls.ItemName.Split(','), ls.Schema.Split(','))
                     {
-                        DataAdapter = ls.DataAdapter
+                        DataAdapter = ls.DataAdapter,
+                        RequestedSnapshot = "yes"
                     };
-                    subscriptionsLS.Enqueue(tableInfo);
+                    sub.addListener(new StocklistHandyTableListener(this));
+
+                    subscriptionsLS.Enqueue(sub);
 
                     ls.addSender(this);
                 }
@@ -104,20 +101,19 @@ public class LightstreamerClientAsset : MonoBehaviour
 
     private void LightStreanerConnect()
     {
-        cInfo = new ConnectionInfo()
-        {
-            PushServerUrl = Hostname,
-            Adapter = AdapterSet,
-            StreamingTimeoutMillis = 10000,
-            EnableStreamSense = false
-        };
+        
+            // StreamingTimeoutMillis = 10000,
+            // EnableStreamSense = false
+        
         try
         {
             Debug.Log("Let's go!  -> " + System.Environment.TickCount);
+            client.addListener(new StocklistConnectionListener(this));
+            client.connectionOptions.ReconnectTimeout = 10000;
 
-            client.OpenConnection(cInfo, new StocklistConnectionListener(this));
+            client.connect();
         }
-        catch (PushConnException pfe)
+        catch (Exception pfe)
         {
             Debug.LogError("Error: " + pfe.Message);
             this.StateMachine = 0;
@@ -130,7 +126,7 @@ public class LightstreamerClientAsset : MonoBehaviour
         {
             Debug.Log("Msg to Snd: " + msg);
 
-            client.SendMessage(msg);
+            client.sendMessage(msg);
         }
     }
 
@@ -151,23 +147,26 @@ public class LightstreamerClientAsset : MonoBehaviour
         }
         else if (this.StateMachine == 2)
         {
+
+            Thread.Sleep(400);
+
             this.StateMachine = 3;
             if (subscriptionsLS.Count > 0)
             {
                 Debug.Log("Subscribing ...");
 
-                ExtendedTableInfo tab = this.subscriptionsLS.Dequeue() as ExtendedTableInfo;
+                Subscription tab = this.subscriptionsLS.Dequeue() as Subscription;
                 while (tab != null)
                 {
-                    client.SubscribeTable(
-                        tab,
-                        new StocklistHandyTableListener(this),
-                        false);
 
-                    Debug.Log("Subscribe " + tab.DataAdapter);
+                    Debug.Log("Client: " + client.Status);
+
+                    client.subscribe(tab);
+
+                    Debug.Log("Subscribe " + tab.DataAdapter + " " + tab.Mode);
 
                     if (subscriptionsLS.Count > 0)
-                        tab = this.subscriptionsLS.Dequeue() as ExtendedTableInfo;
+                        tab = this.subscriptionsLS.Dequeue() as Subscription;
                     else
                         tab = null;
                 }
@@ -180,7 +179,7 @@ public class LightstreamerClientAsset : MonoBehaviour
             while (this.nextUpdate.Count != 0)
             {
                 Debug.Log("SendMessage Update.");
-                BroadcastMessage("RTUpdates", (IUpdateInfo)this.nextUpdate.Dequeue());
+                BroadcastMessage("RTUpdates", (ItemUpdate)this.nextUpdate.Dequeue());
             }
             
             this.StateMachine = 3;
