@@ -130,6 +130,25 @@ public class LightstreamerClientAsset : MonoBehaviour
         }
     }
 
+    void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            Debug.Log("Pausa");
+            client.disconnect();
+        }
+    }
+
+    void OnDestroy()
+    {
+        Debug.Log("OnDestroy1");
+    }
+
+    void OnMouseOver()
+    {
+        Debug.Log("Mouse is over W.");
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -147,31 +166,31 @@ public class LightstreamerClientAsset : MonoBehaviour
         }
         else if (this.StateMachine == 2)
         {
-
-            Thread.Sleep(400);
-
-            this.StateMachine = 3;
-            if (subscriptionsLS.Count > 0)
-            {
-                Debug.Log("Subscribing ...");
-
-                Subscription tab = this.subscriptionsLS.Dequeue() as Subscription;
-                while (tab != null)
+            lock (subscriptionsLS) {
+                if (subscriptionsLS.Count > 0)
                 {
+                    Debug.Log("Subscribing ... " + subscriptionsLS.Count);
 
-                    Debug.Log("Client: " + client.Status);
+                    Subscription tab = this.subscriptionsLS.Dequeue() as Subscription;
+                    if (tab != null)
+                    {
 
-                    client.subscribe(tab);
+                        Debug.Log("Client: " + client.Status);
 
-                    Debug.Log("Subscribe " + tab.DataAdapter + " " + tab.Mode);
+                        client.subscribe(tab);
 
-                    if (subscriptionsLS.Count > 0)
-                        tab = this.subscriptionsLS.Dequeue() as Subscription;
-                    else
-                        tab = null;
+                        Debug.Log("Subscribe " + tab.DataAdapter + " " + tab.Mode);
+
+                    } else
+                    {
+                        this.StateMachine = 3;
+                    }
+
+                    if (!goFlag)
+                    {
+                        goFlag = true;
+                    }
                 }
-
-                if (!goFlag) goFlag = true;
             }
         }
         else if (this.StateMachine == 2001)

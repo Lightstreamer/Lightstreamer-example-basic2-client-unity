@@ -13,6 +13,8 @@ public class LightstreamerCubeAsset : LightstreamerAsset
     private int cc = 1;
     private float scale = 3.0F;
 
+    private bool blocK_color = false;
+
     private void addLabel(string name)
     {
         
@@ -33,12 +35,30 @@ public class LightstreamerCubeAsset : LightstreamerAsset
         
     }
 
+    void OnMouseOver()
+    {
+        Debug.Log("Mouse is over :" + ItemName);
+
+        blocK_color = true;
+
+        this.redC = 250;
+        this.greenC = 250;
+        this.blueC = 250;
+    }
+    void OnMouseExit()
+    {
+        Debug.Log("Mouse is no longer on :" + ItemName);
+
+        blocK_color = false;
+    }
+
     new void Update()
     {
         myObj.transform.Rotate(Vector3.up, 3.5F * Time.deltaTime);
 
         myObj.transform.localScale = new Vector3(3.0F, this.scale, 3.0F);
 
+        
         myObj.material.color = new Color32(Convert.ToByte(this.redC), Convert.ToByte(this.greenC), Convert.ToByte(this.blueC), 0);
     }
 
@@ -50,6 +70,9 @@ public class LightstreamerCubeAsset : LightstreamerAsset
         {
             if (update.isValueChanged(2))
             {
+
+                if (blocK_color) return;
+
                 float ftmp = 1;
                 float.TryParse(update.getValue(2), out ftmp);
 

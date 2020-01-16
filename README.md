@@ -135,7 +135,7 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 * A Unity 2018 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
-* Get the  binaries files of the library (`Lightstreamer_DotNet_Standard_Client.dll` and `Lightstreamer_DotNet_Standard_Client.pdb`) and all dependecies from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 5.0.0 or higher and put them in the `Assets\LightstreamerClient` new folder; then import it as a new Asset.
+* Get the  binaries files of the library (`Lightstreamer_DotNet_Standard_Client.dll`) and all dependecies from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 5.0.0 or higher and put them in the `Assets\LightstreamerClient` new folder; then import it as a new Asset.
 * Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
 * Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.

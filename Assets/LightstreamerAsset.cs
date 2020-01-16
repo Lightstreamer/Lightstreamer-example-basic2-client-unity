@@ -27,6 +27,11 @@ public class LightstreamerAsset : MonoBehaviour
         
     }
 
+    void OnMouseOver()
+    {
+        Debug.Log("Mouse is over " + ItemName);
+    }
+
     public void addSender(LightstreamerClientAsset s)
     {
 
