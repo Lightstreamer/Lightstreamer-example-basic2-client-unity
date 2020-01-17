@@ -51,3 +51,7 @@ Temporary Items
 /SndScene_Data
 /SndScene_Data
 /BasicUnityDemo_Data
+*.dll
+*.meta
+SndSceneData
+obj
