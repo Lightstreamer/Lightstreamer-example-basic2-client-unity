@@ -15,7 +15,7 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Details
 
-The demo intends to show a reference pattern for using <b>.Net Standard Client API</b> for Lightstreamer in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
+The demo intends to show a reference pattern for using [.Net Standard Client API](https://github.com/Lightstreamer/Lightstreamer-lib-client-dotnet) for Lightstreamer in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
 Specifically, the demo includes two `cube` 3D ojects that change their size and color according to the real-time information received through the StockList Data Adapter, the same of the [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
 In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
 
@@ -152,6 +152,7 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 ### Related Projects
 
+* [Lightstreamer .NET Standard Client SDK](https://github.com/Lightstreamer/Lightstreamer-lib-client-dotnet)
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
 * [Lightstreamer - Round-Trip Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript)
 * [Lightstreamer - 3D World Demo - HTML (Three.js) Client](https://github.com/Weswit/Lightstreamer-example-3DWorld-client-javascript)
