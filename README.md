@@ -152,5 +152,5 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 ## Lightstreamer Compatibility Notes
 
-* Compatible with Lightstreamer .NET Standard Client Library version 5.0.0 or newer.
+* Compatible with Lightstreamer .NET Standard Client Library version 5.x.
 * For Lightstreamer Server version 7.0 or greater. Ensure that .NET Standard Client API is supported by Lightstreamer Server license configuration.
