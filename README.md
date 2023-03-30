@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-basic2-client-unity -->
 
-This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 2017 Development platform](https://unity3d.com/).<br>
+This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 2021 Development platform](https://unity3d.com/).<br>
 
 ## Live Demo
 
@@ -42,7 +42,7 @@ In addition this class read the Input and sends the typed message to the server.
 * `ConnectionListener.cs` is the implementation of [ClientListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ClientListener.html) interface to handle notifications of connection activity and errors. 
 * `TableListener.cs` is the implementation of [SubscriptionListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.SubscriptionListener.html) interface to handle notification of data updates and subscription termination.
 
-Check out the sources for further explanations. The Lightstreamer Documentation is available at: http://www.lightstreamer.com/doc<br>
+Check out the sources for further explanations. The Lightstreamer Documentation is available at [lightstreamer.com/doc](https://lightstreamer.com/doc)<br>
 
 <i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/Index.html) as a reference. </i>
 
