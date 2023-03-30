@@ -52,83 +52,16 @@ For any inquiry, please email support@lightstreamer.com.
 
 ## Install
 
-If you want to install a version of this demo pointing to your local Lightstreamer Server, follow these steps:
+<i>Coming soon ... </i>
 
-* Note that, as prerequisite, the [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Stocklist-adapter-java) and the [Lightstreamer - Round-Trip Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-adapter-java) has to be deployed, together in the same Adapter Set, on your local Lightstreamer Server instance.
-The adapters.xml file for the Portfolio Demo, should look like:
-```xml 
-<?xml version="1.0"?>
-
-<!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
-  <adapters_conf id="DEMO">
-  
-    <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
-	
-	<metadata_provider>
-
-		<install_dir>roundtrip</install_dir>
-	
-        <adapter_class>roundtrip_demo.adapters.RoundTripMetadataAdapter</adapter_class>
-
-        <!-- Optional for RoundTripMetadataAdapter.
-               Configuration file for the Adapter's own logging.
-               Logging is managed through log4j. -->
-        <param name="log_config">adapters_log_conf.xml</param>
-        <param name="log_config_refresh_seconds">10</param>
-
-        <!-- Optional, managed by the inherited LiteralBasedProvider.
-               See LiteralBasedProvider javadoc. -->
-        <!--
-        <param name="max_bandwidth">40</param>
-        <param name="max_frequency">3</param>
-        <param name="buffer_size">30</param>
-        <param name="prefilter_frequency">5</param>
-        <param name="allowed_users">user123,user456</param>
-        <param name="distinct_snapshot_length">30</param>
-        -->
-
-        <!-- Optional, managed by the inherited LiteralBasedProvider.
-               See LiteralBasedProvider javadoc. -->
-        <param name="item_family_1">roundtrip\d{1,2}</param>
-        <param name="modes_for_item_family_1">MERGE</param>
-		
-        <param name="item_family_2">item.*</param>
-        <param name="modes_for_item_family_2">MERGE</param>
-
-    </metadata_provider>
-
-    <!-- Mandatory. Define the Data Adapter. -->
-    <data_provider name="ROUNDTRIP_ADAPTER">
-	  
-	    <install_dir>roundtrip</install_dir>
-
-        <adapter_class>roundtrip_demo.adapters.RoundTripDataAdapter</adapter_class>
-
-    </data_provider>
-
-	<!-- Mandatory. Define the Data Adapter. -->
-	<data_provider name="QUOTE_ADAPTER">
-
-	    <install_dir>Stocklist</install_dir>
-
-		<!-- Mandatory. Java class name of the adapter. -->
-		<adapter_class>stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
-
-    </data_provider>
-
-  </adapters_conf>
-```
-* Launch Lightstreamer Server.
-* Download the `deploy.zip` file, which you can find in the [deploy release](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases) of this project and extract the `BasicUnityDemo` folder.
-* Launch `BasicUnityDemo.exe` (please note that the demo tries to connect to http://localhost:8080).
 
 ## Build
 
 To build your own version of `UnityDemo.exe`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity#install) section above, follow these steps:
 
-* A Unity 2018 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
+* A Unity 2021 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
-* Get the  binaries files of the library (`Lightstreamer_DotNet_Standard_Client.dll`) and all dependecies from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 5.0.0 or higher and put them in the `Assets\LightstreamerClient` new folder; then import it as a new Asset.
+* Get the  binaries files of the library (`Lightstreamer.DotNetStandard.Client.Api.dll`, `Lightstreamer.DotNetStandard.Client.dll`, `Lightstreamer.DotNetStandard.Client.Haxe.dll`, and `Lightstreamer.DotNetStandard.Client.Net.dll`) and the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 6 and put them in the `Assets\LS\Lightstreamer_client_library` folder; then import all of them as new Assets.
 * Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
 * Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
@@ -145,7 +78,7 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 
 ### Related Projects
 
-* [Lightstreamer .NET Standard Client SDK](https://github.com/Lightstreamer/Lightstreamer-lib-client-dotnet)
+* [Lightstreamer .NET Standard Client SDK](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/)
 * [Lightstreamer - Stock-List Demos - HTML Clients](https://github.com/Weswit/Lightstreamer-example-Stocklist-client-javascript)
 * [Lightstreamer - Round-Trip Demo - HTML Client](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript)
 * [Lightstreamer - 3D World Demo - HTML (Three.js) Client](https://github.com/Weswit/Lightstreamer-example-3DWorld-client-javascript)
