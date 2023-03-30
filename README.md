@@ -26,7 +26,7 @@ All the child objects can ask to open a [Subscription](https://lightstreamer.com
 The LightstreamerClientAsset component of the World object will perform all the subscriptions specified by child objects, and will communicate with them through two types of messages :
 
 * RTStatus - a message of this type provides information about the status of communication with the Lightstreamer server.
-* RTUpdates - this type of messages brings a [ItemUpdate](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ItemUpdate.html) object of the Lightstreamer .NET clien library.
+* RTUpdates - this type of messages brings an [ItemUpdate](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ItemUpdate.html) object of the Lightstreamer .NET client library.
 
 ### Dig the Code
 
