@@ -15,7 +15,7 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Details
 
-The demo intends to show a reference pattern for using [.Net Standard Client API](https://github.com/Lightstreamer/Lightstreamer-lib-client-dotnet) for Lightstreamer in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
+The demo intends to show a reference pattern for using [Lightstreamer Client API](https://github.com/Lightstreamer/Lightstreamer-lib-client-haxe) in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
 Specifically, the demo includes two `cube` 3D ojects that change their size and color according to the real-time information received through the StockList Data Adapter, the same of the [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
 In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
 
@@ -30,7 +30,7 @@ The LightstreamerClientAsset component of the World object will perform all the 
 
 ### Dig the Code
 
-The Lightstreamer bits in this demo are located inside C# scripts in the `Assets/` directory.<br>
+The Lightstreamer bits in this demo are located inside C# scripts in the `Assets/LS` directory.<br>
 
 In detail the files with the source code are:
 * `LighstreamerClientAsset` is the class that manages the connection to the Lightstreamer server and all the subscriptions. Redistributes received updates by broadcasting messages to all the child objects of the object game it is added.
@@ -66,6 +66,16 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 * You can then build and run the project by menu `File` and then `Build & Run`.
 * Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
 
+### Mono or IL2CPP
+
+The demo was built and tested with both Mono and IL2CPP backend scripting.
+To build a project with IL2CPP, you need to have the backend installed in your Unity installation. You can change the scripting backend Unity uses to build your application through the Player Settings following theese steps:
+
+	1. Go to Edit > Project Settings.
+	2. Click on the Player Settings button to open the Player settings for the current platform in the Inspector.
+	3. Navigate to the Configuration section heading under the Other Settings sub-menu.
+	4. Click on the Scripting Backend dropdown menu, then select IL2CPP.
+
 ## See Also
 
 ### Lightstreamer Adapters Needed by This Demo Client
@@ -86,4 +96,4 @@ To build your own version of `UnityDemo.exe`, instead of using the one provided 
 ## Lightstreamer Compatibility Notes
 
 * Compatible with Lightstreamer .NET Standard Client Library version 6.
-* For Lightstreamer Server version 7.0 or greater. Ensure that .NET Standard Client API is supported by Lightstreamer Server license configuration.
+* For Lightstreamer Server version 7.3.2 or newer. Ensure that .NET Standard Client API is supported by Lightstreamer Server license configuration.
