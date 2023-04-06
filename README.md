@@ -9,8 +9,8 @@ This project includes a demo client showing the integration between [Lightstream
 [![Demo ScreenShot](screen_demo_large2.png)](https://demos.lightstreamer.com/UnityDemo/BasicUnityDemo.zip)<br>
 
 ### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](http://demos.lightstreamer.com/UnityDemo2/BasicUnityDemo.zip)<br>
-(for Windows systems: download BasicUnityDemo.zip; unzip it; launch BasicUnityDemo.exe)<br>
-(for Linux systems: download BasicUnityDemo.zip; unzip it; launch BasicUnityDemo.x86)<br>
+(for Windows systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_mono directory; launch example-basic2-client-unity.exe)<br>
+(for Linux systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_linux_IL2CPP; launch example-basic2-client-unity.x86_64)<br>
 (for Android devices: download BasicUnityDemo.zip; unzip it; install BasicUnityDemo.apk manually on your Android device)
 
 ## Details
