@@ -62,17 +62,17 @@ LS_HOME
   ->\BasicUnity2
     ->\calsses
 	  ->log4j2.xml
-	->\lib
-	  ->log4j-api-2.17.1.jar
-	  ->log4j-core-2.17.1.jar
-	  ->ls-adapter-inprocess-7.3.0.jar
-	->\roundtrip
-	  ->\lib
-	    ->example-RoundTrip-adapter-java-0.0.1-SNAPSHOT.jar
-	->\Stocklist
-	  ->lib
-	    ->stocklist-adapter-java-1.0.0.jar
-	adapters.xml
+    ->\lib
+      ->log4j-api-2.17.1.jar
+      ->log4j-core-2.17.1.jar
+      ->ls-adapter-inprocess-7.3.0.jar
+    ->\roundtrip
+      ->\lib
+        ->example-RoundTrip-adapter-java-0.0.1-SNAPSHOT.jar
+    ->\Stocklist
+      ->lib
+        ->stocklist-adapter-java-1.0.0.jar
+    adapters.xml
 ```
 
 and adapters.xml file for the Portfolio Demo, should look like:
