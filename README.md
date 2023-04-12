@@ -52,7 +52,96 @@ For any inquiry, please email support@lightstreamer.com.
 
 ## Install
 
-<i>Coming soon ... </i>
+If you want to install a version of this demo pointing to your local Lightstreamer Server, follow these steps:
+
+* Note that, as prerequisite, the [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Stocklist-adapter-java) and the [Lightstreamer - Round-Trip Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-adapter-java) has to be deployed, together in the same Adapter Set, on your local Lightstreamer Server instance.
+The folder structure of the adapter set shoul look like:
+``` 
+LS_HOME
+->\adapters
+  ->\BasicUnity2
+    ->\calsses
+	  ->log4j2.xml
+	->\lib
+	  ->log4j-api-2.17.1.jar
+	  ->log4j-core-2.17.1.jar
+	  ->ls-adapter-inprocess-7.3.0.jar
+	->\roundtrip
+	  ->\lib
+	    ->example-RoundTrip-adapter-java-0.0.1-SNAPSHOT.jar
+	->\Stocklist
+	  ->lib
+	    ->stocklist-adapter-java-1.0.0.jar
+	adapters.xml
+```
+
+and adapters.xml file for the Portfolio Demo, should look like:
+```xml 
+<?xml version="1.0"?>
+
+<!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
+  <adapters_conf id="DEMO">
+  
+    <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
+	
+	<metadata_provider>
+
+		<install_dir>roundtrip</install_dir>
+	
+        <adapter_class>roundtrip_demo.adapters.RoundTripMetadataAdapter</adapter_class>
+
+        <!-- Optional for RoundTripMetadataAdapter.
+               Configuration file for the Adapter's own logging.
+               Logging is managed through log4j. -->
+        <param name="log_config">adapters_log_conf.xml</param>
+        <param name="log_config_refresh_seconds">10</param>
+
+        <!-- Optional, managed by the inherited LiteralBasedProvider.
+               See LiteralBasedProvider javadoc. -->
+        <!--
+        <param name="max_bandwidth">40</param>
+        <param name="max_frequency">3</param>
+        <param name="buffer_size">30</param>
+        <param name="prefilter_frequency">5</param>
+        <param name="allowed_users">user123,user456</param>
+        <param name="distinct_snapshot_length">30</param>
+        -->
+
+        <!-- Optional, managed by the inherited LiteralBasedProvider.
+               See LiteralBasedProvider javadoc. -->
+        <param name="item_family_1">roundtrip\d{1,2}</param>
+        <param name="modes_for_item_family_1">MERGE</param>
+		
+        <param name="item_family_2">item.*</param>
+        <param name="modes_for_item_family_2">MERGE</param>
+
+    </metadata_provider>
+
+    <!-- Mandatory. Define the Data Adapter. -->
+    <data_provider name="ROUNDTRIP_ADAPTER">
+	  
+	    <install_dir>roundtrip</install_dir>
+
+        <adapter_class>roundtrip_demo.adapters.RoundTripDataAdapter</adapter_class>
+
+    </data_provider>
+
+	<!-- Mandatory. Define the Data Adapter. -->
+	<data_provider name="QUOTE_ADAPTER">
+
+	    <install_dir>Stocklist</install_dir>
+
+		<!-- Mandatory. Java class name of the adapter. -->
+		<adapter_class>stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
+
+    </data_provider>
+
+  </adapters_conf>
+```
+
+* Launch Lightstreamer Server.
+* Download the `deploy.zip` file, which you can find in the [latest release](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases) of this project and extract the `example-basic2-client-unity_mono_localhost` folder.
+* Launch `example-basic2-client-unity.exe`, please note that the demo tries to connect to http://localhost:8080 and a Windows system is required.
 
 
 ## Build
@@ -97,3 +186,4 @@ To build a project with IL2CPP, you need to have the backend installed in your U
 
 * Compatible with Lightstreamer .NET Standard Client Library version 6.
 * For Lightstreamer Server version 7.3.2 or newer. Ensure that .NET Standard Client API is supported by Lightstreamer Server license configuration.
+* For instructions compatible with .NET Standard Client library version 5.x, please refer to [this tag](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/tree/for_client_5.x).
