@@ -25,15 +25,15 @@ To 'World' has been added the `LighstreamerClientAsset` component, which will ta
 All the child objects can ask to open a [Subscription](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.Subscription.html) versus the Lightstreamer server by setting these parameters of the `LighstreamerAsset` component: ItemName, Schema, DataAdapter.
 The LightstreamerClientAsset component of the World object will perform all the subscriptions specified by child objects, and will communicate with them through two types of messages :
 
-* RTStatus - a message of this type provides information about the status of communication with the Lightstreamer server.
-* RTUpdates - this type of messages brings an [ItemUpdate](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ItemUpdate.html) object of the Lightstreamer .NET client library.
+* `RTStatus` - a message of this type provides information about the status of communication with the Lightstreamer server.
+* `RTUpdates` - this type of messages brings an [ItemUpdate](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ItemUpdate.html) object of the Lightstreamer .NET client library.
 
 ### Dig the Code
 
 The Lightstreamer bits in this demo are located inside C# scripts in the `Assets/LS` directory.<br>
 
 In detail the files with the source code are:
-* `LighstreamerClientAsset` is the class that manages the connection to the Lightstreamer server and all the subscriptions. Redistributes received updates by broadcasting messages to all the child objects of the object game it is added.
+* `LighstreamerClientAsset` is the class that manages the connection to the Lightstreamer server and all the subscriptions. Redistributes received updates by broadcasting messages to all the child objects.
 * `LighstreamerAsset` is a base class that should be extended by all those components who want to consume real time events from Lightstreamer server. 
 * `LightstreamerCubeAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated to a Cube object. Upon receipt of a message, 
 after verifying that the involved Item is the one specified in the ItemName parameter, change the color of the cube by setting parameterized rgb values based on the value of the last_price field (I admit this does not make much sense, it's just an example), and modify the cube size (y axis only) in pase to the pct_change field value.
@@ -44,7 +44,7 @@ In addition this class read the Input and sends the typed message to the server.
 
 Check out the sources for further explanations. The Lightstreamer Documentation is available at [lightstreamer.com/doc](https://lightstreamer.com/doc)<br>
 
-<i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are exposed by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/Index.html) as a reference. </i>
+<i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are leveraged by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/Index.html) as a reference. </i>
 
 For any inquiry, please email support@lightstreamer.com.
 
@@ -55,13 +55,13 @@ For any inquiry, please email support@lightstreamer.com.
 If you want to install a version of this demo pointing to your local Lightstreamer Server, follow these steps:
 
 * Note that, as prerequisite, the [Lightstreamer - Stock-List Demo - Java Adapter](https://github.com/Weswit/Lightstreamer-example-Stocklist-adapter-java) and the [Lightstreamer - Round-Trip Demo - Java Adapter](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-adapter-java) has to be deployed, together in the same Adapter Set, on your local Lightstreamer Server instance.
-The folder structure of the adapter set shoul look like:
+The folder structure of the Adapter set should look like:
 ``` 
 LS_HOME
 ->\adapters
   ->\BasicUnity2
     ->\calsses
-	  ->log4j2.xml
+      ->log4j2.xml
     ->\lib
       ->log4j-api-2.17.1.jar
       ->log4j-core-2.17.1.jar
@@ -72,7 +72,7 @@ LS_HOME
     ->\Stocklist
       ->lib
         ->stocklist-adapter-java-1.0.0.jar
-    adapters.xml
+    ->adapters.xml
 ```
 
 and adapters.xml file for the Portfolio Demo, should look like:
@@ -80,7 +80,7 @@ and adapters.xml file for the Portfolio Demo, should look like:
 <?xml version="1.0"?>
 
 <!-- Mandatory. Define an Adapter Set and sets its unique ID. -->
-  <adapters_conf id="DEMO">
+<adapters_conf id="DEMO">
   
     <metadata_adapter_initialised_first>Y</metadata_adapter_initialised_first>
 	
@@ -132,28 +132,28 @@ and adapters.xml file for the Portfolio Demo, should look like:
 	    <install_dir>Stocklist</install_dir>
 
 		<!-- Mandatory. Java class name of the adapter. -->
-		<adapter_class>stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
+		<adapter_class>com.lightstreamer.examples.stocklist_demo.adapters.StockQuotesDataAdapter</adapter_class>
 
     </data_provider>
 
-  </adapters_conf>
+</adapters_conf>
 ```
 
-* Launch Lightstreamer Server.
+* Launch the Lightstreamer Server.
 * Download the `deploy.zip` file, which you can find in the [latest release](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases) of this project and extract the `example-basic2-client-unity_mono_localhost` folder.
 * Launch `example-basic2-client-unity.exe`, please note that the demo tries to connect to http://localhost:8080 and a Windows system is required.
 
 
 ## Build
 
-To build your own version of `UnityDemo.exe`, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity#install) section above, follow these steps:
+To build your own version of the demo executable, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity#install) section above, follow these steps:
 
 * A Unity 2021 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
 * Get the  binaries files of the library (`Lightstreamer.DotNetStandard.Client.Api.dll`, `Lightstreamer.DotNetStandard.Client.dll`, `Lightstreamer.DotNetStandard.Client.Haxe.dll`, and `Lightstreamer.DotNetStandard.Client.Net.dll`) and the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 6 and put them in the `Assets\LS\Lightstreamer_client_library` folder; then import all of them as new Assets.
 * Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
-* Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'http://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
+* Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'https://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
 
 ### Mono or IL2CPP
 
