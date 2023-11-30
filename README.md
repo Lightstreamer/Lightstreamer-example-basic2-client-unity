@@ -2,6 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-basic2-client-unity -->
 
+New Line.
 This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 2021 Development platform](https://unity3d.com/).<br>
 
 ## Live Demo
