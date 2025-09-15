@@ -99,7 +99,7 @@ void Start()
                         DataAdapter = ls.DataAdapter,
                         RequestedSnapshot = "yes"
                     };
-                    sub.addListener(new StocklistHandyTableListener(this));
+                    sub.addListener(new RTQuoteListener(this));
 
                     subscriptionsLS.Enqueue(sub);
 

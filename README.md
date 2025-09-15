@@ -2,7 +2,7 @@
 
 <!-- START DESCRIPTION lightstreamer-example-basic2-client-unity -->
 
-This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 2021 Development platform](https://unity3d.com/).<br>
+This project includes a demo client showing the integration between [Lightstreamer server](https://www.lightstreamer.com/) and the [Unity 6](https://unity.com/).<br>
 
 ## Live Demo
 
@@ -11,13 +11,14 @@ This project includes a demo client showing the integration between [Lightstream
 ### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](http://demos.lightstreamer.com/UnityDemo2/BasicUnityDemo.zip)<br>
 (for Windows systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_mono directory; launch example-basic2-client-unity.exe)<br>
 (for Linux systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_linux_IL2CPP; launch example-basic2-client-unity.x86_64)<br>
-(for Android devices: download BasicUnityDemo.zip; unzip it; install BasicUnityDemo.apk manually on your Android device)
+
 
 ## Details
 
-The demo intends to show a reference pattern for using [Lightstreamer Client API](https://github.com/Lightstreamer/Lightstreamer-lib-client-haxe) in a Unity 3d project in order to add sources of real-time information to which game objects in a scene can react.
-Specifically, the demo includes two `cube` 3D ojects that change their size and color according to the real-time information received through the StockList Data Adapter, the same of the [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
-In addition a `3D Text` object acts as very very simple chat based on the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript). 
+The demo is designed to illustrate a reference pattern for using the [Lightstreamer Client API](https://github.com/Lightstreamer/Lightstreamer-lib-client-haxe) within a Unity 3D project, in order to add real-time data sources that game objects in a scene can react to.
+Specifically, the demo features three 3D `cube` objects that change their size and color based on the real-time updates received through the StockList Data Adapter, the same one used in our well-known [StockList demo](https://github.com/Lightstreamer/Lightstreamer-example-StockList-client-javascript).
+In addition, a few `TextMeshPro` objects are used as labels, with some of them being updated in real time.
+Alongside stock list data, the demo also displays an Item from the [Round-Trip demo](https://github.com/Lightstreamer/Lightstreamer-example-RoundTrip-client-javascript), used here to demonstrate instant messaging functionality.
 
 All the objects who want to communicate with the Lightstreamer server should be children of the same parent object, in this demo called 'World', and be tagged with a label that starts with the string 'lightstreamer'.
 To 'World' has been added the `LighstreamerClientAsset` component, which will take care of opening a Lightstreamer session with the information provided in the parameters: `Push Url` and `Adapters Set`.
@@ -35,12 +36,12 @@ The Lightstreamer bits in this demo are located inside C# scripts in the `Assets
 In detail the files with the source code are:
 * `LighstreamerClientAsset` is the class that manages the connection to the Lightstreamer server and all the subscriptions. Redistributes received updates by broadcasting messages to all the child objects.
 * `LighstreamerAsset` is a base class that should be extended by all those components who want to consume real time events from Lightstreamer server. 
-* `LightstreamerCubeAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated to a Cube object. Upon receipt of a message, 
-after verifying that the involved Item is the one specified in the ItemName parameter, change the color of the cube by setting parameterized rgb values based on the value of the last_price field (I admit this does not make much sense, it's just an example), and modify the cube size (y axis only) in pase to the pct_change field value.
-* `LightstreamerMsgAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated to a 3D Text object to display the message of an Item of Round-Trip demo specified in ItemName parameter.
+* `LightstreamerCubeAsset.cs` is the Lightstreamer component, an extension of the `LighstreamerAsset` base class, that can be associated with a Cube object. Upon receiving a message, it verifies that the Item matches the one specified in the `ItemName` parameter, then changes the cube’s color (green for positive values and red for negative ones, with intensity reflecting the magnitude of the value) and adjusts the cube’s size (y-axis only) based on the pct_change field value.
+* `LightstreamerLabelAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the pct_change field value.
+* `LightstreamerMsgAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the message of an Item of Round-Trip demo specified in ItemName parameter.
 In addition this class read the Input and sends the typed message to the server.
 * `ConnectionListener.cs` is the implementation of [ClientListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ClientListener.html) interface to handle notifications of connection activity and errors. 
-* `TableListener.cs` is the implementation of [SubscriptionListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.SubscriptionListener.html) interface to handle notification of data updates and subscription termination.
+* `RTQuoteListener.cs` is the implementation of [SubscriptionListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.SubscriptionListener.html) interface to handle notification of data updates and subscription termination.
 
 Check out the sources for further explanations. The Lightstreamer Documentation is available at [lightstreamer.com/doc](https://lightstreamer.com/doc)<br>
 
@@ -161,9 +162,8 @@ The demo was built and tested with both Mono and IL2CPP backend scripting.
 To build a project with IL2CPP, you need to have the backend installed in your Unity installation. You can change the scripting backend Unity uses to build your application through the Player Settings following theese steps:
 
 	1. Go to Edit > Project Settings.
-	2. Click on the Player Settings button to open the Player settings for the current platform in the Inspector.
-	3. Navigate to the Configuration section heading under the Other Settings sub-menu.
-	4. Click on the Scripting Backend dropdown menu, then select IL2CPP.
+	2. Navigate to the Configuration section heading under the Other Settings sub-menu.
+	3. Click on the Scripting Backend dropdown menu, then select IL2CPP.
 
 ## See Also
 

@@ -7,43 +7,65 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 {
     private Renderer myObj;
 
-    private int redC = 0;
-    private int greenC = 0;
-    private int blueC = 0;
-    private int cc = 1;
-    private float scale = 3.0F;
+    public Transform stockCube;
+
+    public float refscale = 0.3f;   // quanto incide la % sull’altezza
+    
+    public float baselineY = 0f;       // la linea base comune (es. piano di riferimento)
 
     private bool blocK_color = false;
 
+    void SetHeight(Transform cube, float percentChange)
+    {
+        float newHeight = Mathf.Max(0.1f, Mathf.Abs(percentChange) * refscale);
+
+        Debug.Log("Setting height to: " + newHeight + " (change: " + percentChange + ", scaleFactor: " + refscale + ")");
+
+        // Aggiorna scala
+        Vector3 scale = cube.localScale;
+        scale.y = newHeight;
+        cube.localScale = scale;
+
+        // Calcola posizione per ancorare la base alla baseline
+        Vector3 pos = cube.position;
+
+        if (percentChange >= 0)
+        {
+            // positivo: base rimane sulla baseline, cresce verso l’alto
+            pos.y = baselineY + newHeight / 2f;
+        }
+        else
+        {
+            // negativo: base rimane sulla baseline, cresce verso il basso
+            pos.y = baselineY - newHeight / 2f;
+        }
+
+        cube.position = pos;
+
+        myObj.material.color = StockColorUtils.GetStockColor(percentChange);
+    }
+
     private void addLabel(string name)
     {
-        
+
     }
 
     new void Start()
     {
         myObj = GetComponent<Renderer>();
-
-        if (ItemName.EndsWith("2"))
-        {
-            cc = 0;
-        }
+        stockCube = myObj.transform;
 
         myObj.material.color = new Color(1.0F, 0.0F, 0.0F);
 
         addLabel(this.ItemName);
-        
+
     }
 
     void OnMouseOver()
     {
-        //Debug.Log("Mouse is over :" + ItemName);
+        Debug.Log("Mouse is over :" + ItemName);
 
-        blocK_color = true;
-
-        this.redC = 250;
-        this.greenC = 250;
-        this.blueC = 250;
+        myObj.material.color = Color.yellow;
     }
     void OnMouseExit()
     {
@@ -54,12 +76,7 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
     new void Update()
     {
-        myObj.transform.Rotate(Vector3.up, 3.5F * Time.deltaTime);
-
-        myObj.transform.localScale = new Vector3(3.0F, this.scale, 3.0F);
-
-        
-        myObj.material.color = new Color32(Convert.ToByte(this.redC), Convert.ToByte(this.greenC), Convert.ToByte(this.blueC), 0);
+        // Nothing to do here
     }
 
     new public void RTUpdates(ItemUpdate update)
@@ -68,38 +85,33 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
         if (update.ItemName.StartsWith("item"))
         {
-            if (update.isValueChanged(2))
+            if (update.isValueChanged("last_price"))
             {
 
                 if (blocK_color) return;
 
-                float ftmp = 1;
-                float.TryParse(update.getValue(2), out ftmp);
+                // int iValue = Mathf.FloorToInt(ftmp);
+                // int iValue2 = Mathf.FloorToInt(ftmp / 2.0F);
 
-                int iValue = Mathf.FloorToInt(ftmp);
-                int iValue2 = Mathf.FloorToInt(ftmp / 2.0F);
-
-                if (this.cc == 0)
-                {
-                    this.redC = (this.redC + iValue) % 255;
-                    this.blueC = (this.blueC + iValue2) % 255;
-                }
-                else
-                {
-                    this.greenC = (this.greenC + iValue) % 255;
-                    this.blueC = (this.blueC + iValue2) % 255;
-                }
+                // if (this.cc == 0)
+                // {
+                //     this.redC = (this.redC + iValue) % 255;
+                //     this.blueC = (this.blueC + iValue2) % 255;
+                // }
+                // else
+                // {
+                //     this.greenC = (this.greenC + iValue) % 255;
+                //     this.blueC = (this.blueC + iValue2) % 255;
+                // }
             }
-            if (update.isValueChanged(4))
+            if (update.isValueChanged("pct_change"))
             {
-                float ftmp = 1;
-                float.TryParse(update.getValue(4), out ftmp);
+                float change = 1.0F;
+                float.TryParse(update.getValue("pct_change"), out change);
 
-                Debug.Log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " + ftmp);
+                Debug.Log("Percent change: " + change);
 
-                this.scale = 3.0F + (3.0F * ftmp / 5000.0F);
-
-                Debug.Log("New scale: " + this.scale);
+                SetHeight(stockCube, change);
             }
         }
     }
@@ -109,28 +121,45 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
         if (status.Contains("CLOSE"))
         {
-            this.blueC = 0;
-            this.greenC = 0;
-            this.redC = 255;
-        }
-        else if (status.Contains("CLOSE"))
-        {
-            this.blueC = 50;
-            this.greenC = 130;
-            this.redC = 155;
+            myObj.material.color = Color.gray;
         }
         else if (status.Contains("POLLING"))
         {
-            this.blueC = 0;
-            this.greenC = 200;
-            this.redC = 55;
+            myObj.material.color = Color.cyan;
         }
         else if (status.Contains("STREAMING"))
         {
-            this.blueC = 70;
-            this.greenC = 90;
-            this.redC = 70;
+            myObj.material.color = new Color(70, 90, 70);
         }
 
+    }
+}
+
+public static class StockColorUtils {
+    /// <summary>
+    /// Restituisce un colore graduale in base alla variazione percentuale.
+    /// Da bianco → verde per valori positivi,
+    /// da bianco → rosso per valori negativi.
+    /// Oltre ±10% il colore rimane al massimo della saturazione.
+    /// </summary>
+    public static Color GetStockColor(float percentChange) {
+        // Normalizza intensità (0 = nessun cambiamento, 1 = massimo effetto)
+        float intensity = Mathf.Clamp01(Mathf.Abs(percentChange) / 10f);
+
+        Color baseColor;
+        Color targetColor;
+
+        if (percentChange >= 0) {
+            // da verde scuro → verde pieno
+            baseColor = new Color(0.8f, 1f, 0.8f); // light green
+            targetColor = new Color(0f, 0.3f, 0f); // dark green
+        } else {
+            // da rosso scuro → rosso pieno
+            baseColor = new Color(1f, 0.8f, 0.8f); // light red
+            targetColor = new Color(0.3f, 0f, 0f); // dark red
+        }
+
+
+        return Color.Lerp(baseColor, targetColor, intensity);
     }
 }

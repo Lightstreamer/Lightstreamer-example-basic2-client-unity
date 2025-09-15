@@ -10,6 +10,9 @@ TagManager:
   - lightstreamer-item2
   - lightstreamer-item11
   - lightstreamer-roundtrip0
+  - lightstreamer-item7
+  - lightstreamer-item17
+  - lightstreamer
   layers:
   - Default
   - TransparentFX

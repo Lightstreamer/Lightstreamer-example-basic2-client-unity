@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using com.lightstreamer.client;
 
-public class StocklistHandyTableListener : SubscriptionListener
+public class RTQuoteListener : SubscriptionListener
 {
 
     private LightstreamerClientAsset target = null;
 
-    public StocklistHandyTableListener(LightstreamerClientAsset target)
+    public RTQuoteListener(LightstreamerClientAsset target)
     {
         this.target = target;
 

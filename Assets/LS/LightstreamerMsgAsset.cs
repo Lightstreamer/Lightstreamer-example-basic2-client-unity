@@ -1,11 +1,26 @@
 ﻿using UnityEngine;
 using com.lightstreamer.client;
 using System;
+using TMPro;
+using com.lightstreamer.client.@internal.update;
 
 public class LightstreamerMsgAsset : LightstreamerAsset
 {
     
     private String msgForTheServer = "";
+    private TMP_Text  label;
+    
+    private const int MAX_LENGTH = 50;
+
+    private
+    new void Start()
+    {
+        // retrieve the TextMeshPro component
+        label = GetComponent<TMP_Text>();
+
+        Debug.Log("LightstreamerMsgAsset::Start: " + label.text);
+        label.text = "Hello World!";
+    }
     
     new public void Update()
     {
@@ -17,7 +32,7 @@ public class LightstreamerMsgAsset : LightstreamerAsset
 
             Debug.Log("New input:" + msgFromTheUser);
 
-            if (msgForTheServer.Length < 20)
+            if (msgForTheServer.Length < MAX_LENGTH)
             {
                 msgForTheServer += msgFromTheUser;
             }
@@ -41,7 +56,7 @@ public class LightstreamerMsgAsset : LightstreamerAsset
         {
             Debug.Log("Message:" + update.getValue("message"));
 
-            GetComponent<TextMesh>().text = update.getValue("message");
+            label.text = update.getValue("message");
         }
     }
 }
