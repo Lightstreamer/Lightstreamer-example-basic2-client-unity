@@ -31,17 +31,22 @@ The LightstreamerClientAsset component of the World object will perform all the 
 
 ### Dig the Code
 
-The Lightstreamer bits in this demo are located inside C# scripts in the `Assets/LS` directory.<br>
+The Lightstreamer components used in this demo are implemented as C# scripts located in the `Assets/LS` directory.  
+The source files include:  
 
-In detail the files with the source code are:
-* `LighstreamerClientAsset` is the class that manages the connection to the Lightstreamer server and all the subscriptions. Redistributes received updates by broadcasting messages to all the child objects.
-* `LighstreamerAsset` is a base class that should be extended by all those components who want to consume real time events from Lightstreamer server. 
-* `LightstreamerCubeAsset.cs` is the Lightstreamer component, an extension of the `LighstreamerAsset` base class, that can be associated with a Cube object. Upon receiving a message, it verifies that the Item matches the one specified in the `ItemName` parameter, then changes the cube’s color (green for positive values and red for negative ones, with intensity reflecting the magnitude of the value) and adjusts the cube’s size (y-axis only) based on the pct_change field value.
-* `LightstreamerLabelAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the pct_change field value.
-* `LightstreamerMsgAsset.cs` is the Lightstreamer component, extension of `LighstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the message of an Item of Round-Trip demo specified in ItemName parameter.
-In addition this class read the Input and sends the typed message to the server.
-* `ConnectionListener.cs` is the implementation of [ClientListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.ClientListener.html) interface to handle notifications of connection activity and errors. 
-* `RTQuoteListener.cs` is the implementation of [SubscriptionListener](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/com.lightstreamer.client.SubscriptionListener.html) interface to handle notification of data updates and subscription termination.
+* **LightstreamerClientAsset.cs** – Manages the connection to the Lightstreamer Server and all subscriptions. It redistributes received updates by broadcasting messages to all child objects.  
+
+* **LightstreamerAsset.cs** – A base class that should be extended by any component that consumes real-time events from the Lightstreamer Server.  
+
+* **LightstreamerCubeAsset.cs** – A Lightstreamer component, extending the `LightstreamerAsset` base class, that can be associated with a Cube object. Upon receiving a message, it verifies that the Item matches the one specified in the `ItemName` parameter, then changes the cube’s color (green for positive values and red for negative ones, with intensity reflecting the magnitude of the value) and adjusts the cube’s size (y-axis only) based on the `pct_change` field value.  
+
+* **LightstreamerLabelAsset.cs** – A Lightstreamer component, extending the `LightstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the `pct_change` field value.  
+
+* **LightstreamerMsgAsset.cs** – A Lightstreamer component, extending the `LightstreamerAsset` base class, that can be associated with a `TextMeshPro` object to display the message of an Item from the Round-Trip demo specified in the `ItemName` parameter. In addition, this class reads user input and sends the typed message to the server.  
+
+* **ConnectionListener.cs** – An implementation of the `ClientListener` interface that handles connection activity and error notifications.  
+
+* **RTQuoteListener.cs** – An implementation of the `SubscriptionListener` interface that handles data updates and subscription termination notifications.  
 
 Check out the sources for further explanations. The Lightstreamer Documentation is available at [lightstreamer.com/doc](https://lightstreamer.com/doc)<br>
 
