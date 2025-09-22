@@ -156,8 +156,31 @@ To build your own version of the demo executable, instead of using the one provi
 
 * A Unity 6 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
-* Install the Lightstreamer client library; here you have two choice 
-	* Get the  binaries files of the library (`Lightstreamer.DotNetStandard.Client.Api.dll`, `Lightstreamer.DotNetStandard.Client.dll`, `Lightstreamer.DotNetStandard.Client.Haxe.dll`, and `Lightstreamer.DotNetStandard.Client.Net.dll`) and the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 6 and put them in the `Assets\LS\Lightstreamer_client_library` folder; then import all of them as new Assets.
+* Install the Lightstreamer client library. You have two options:
+
+  ### 1. Manual installation of DLLs
+  - Download the Lightstreamer .NET Standard Client binaries from [NuGet](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) (version 6).  
+  - You will need the following files:  
+    - `Lightstreamer.DotNetStandard.Client.Api.dll`  
+    - `Lightstreamer.DotNetStandard.Client.dll`  
+    - `Lightstreamer.DotNetStandard.Client.Haxe.dll`  
+    - `Lightstreamer.DotNetStandard.Client.Net.dll`  
+    - plus the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/)  
+  - Copy all these DLLs into the folder `Assets\LS\Lightstreamer_client_library`.  
+  - In Unity, import them as new Assets (drag & drop into the **Project** view or via `Assets → Import New Asset...`).
+
+  ### 2. Using NuGet for Unity
+  - Download and import the [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity) package:
+    1. Get the latest `.unitypackage` release from [NuGetForUnity Releases](https://github.com/GlitchEnzo/NuGetForUnity/releases).  
+    2. In Unity, go to `Assets → Import Package → Custom Package...` and select the downloaded file.  
+    3. Confirm the import.
+  - After installation, a new menu `NuGet` will appear in Unity.  
+  - Go to `NuGet → Manage NuGet Packages`.  
+  - Search for **Lightstreamer.DotNetStandard.Client** and select the latest version (**6.2.1**).  
+  - Click **Install**.  
+  - NuGetForUnity will automatically download the required DLLs into a `Packages` folder inside your Unity project (e.g., `Packages/Lightstreamer.DotNetStandard.Client/lib/netstandard2.0/`).  
+  - Verify in the **Project** view that Unity recognizes the assemblies.
+  
 * Open `SampleScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
 * Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'https://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
