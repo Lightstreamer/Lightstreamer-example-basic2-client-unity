@@ -9,8 +9,8 @@ This project includes a demo client showing the integration between [Lightstream
 [![Demo ScreenShot](screen_demo_large2.png)](https://demos.lightstreamer.com/UnityDemo/BasicUnityDemo.zip)<br>
 
 ### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](http://demos.lightstreamer.com/UnityDemo2/BasicUnityDemo.zip)<br>
-(for Windows systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_mono directory; launch example-basic2-client-unity.exe)<br>
-(for Linux systems: download BasicUnityDemo.zip; unzip it; open example-basic2-client-unity_linux_IL2CPP; launch example-basic2-client-unity.x86_64)<br>
+(for Windows systems: download BasicUnityDemo.zip; unzip it; open myworld directory; launch lightstreamer-unity-test.exe)<br>
+(for Linux systems: download BasicUnityDemo.zip; unzip it; open myworld directory; launch myworld.x86_64)<br>
 
 
 ## Details
@@ -170,15 +170,18 @@ To build your own version of the demo executable, instead of using the one provi
   - In Unity, import them as new Assets (drag & drop into the **Project** view or via `Assets → Import New Asset...`).
 
   ### 2. Using NuGet for Unity
-  - Download and import the [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity) package:
-    1. Get the latest `.unitypackage` release from [NuGetForUnity Releases](https://github.com/GlitchEnzo/NuGetForUnity/releases).  
-    2. In Unity, go to `Assets → Import Package → Custom Package...` and select the downloaded file.  
-    3. Confirm the import.
+  - Open Unity and go to `Window → Package Manager`.  
+  - Click the **+** button in the top-left corner and choose **Add package from git URL...**  
+  - Enter the following URL:  
+    ```
+    https://github.com/GlitchEnzo/NuGetForUnity.git
+    ```
+  - Unity will fetch and install the NuGetForUnity package directly from GitHub.  
   - After installation, a new menu `NuGet` will appear in Unity.  
   - Go to `NuGet → Manage NuGet Packages`.  
   - Search for **Lightstreamer.DotNetStandard.Client** and select the latest version (**6.2.1**).  
   - Click **Install**.  
-  - NuGetForUnity will automatically download the required DLLs into a `Packages` folder inside your Unity project (e.g., `Packages/Lightstreamer.DotNetStandard.Client/lib/netstandard2.0/`).  
+  - NuGetForUnity will automatically download the required DLLs into a `Packages` folder inside your Unity project (e.g., `Assets/Packages/Lightstreamer.DotNetStandard.Client.6.2.1/lib/netstandard2.1/`).  
   - Verify in the **Project** view that Unity recognizes the assemblies.
   
 * Open `SampleScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
