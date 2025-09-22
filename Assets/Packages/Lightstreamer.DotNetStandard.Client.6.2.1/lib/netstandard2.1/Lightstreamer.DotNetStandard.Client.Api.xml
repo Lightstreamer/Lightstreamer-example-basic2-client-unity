@@ -1,0 +1,869 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lightstreamer.DotNetStandard.Client.Api</name>
+    </assembly>
+    <members>
+        <member name="T:com.lightstreamer.client.ClientListener">
+            <summary>
+            Interface to be implemented to listen to <c>LightstreamerClient</c> events comprehending notifications of 
+            connection activity and errors. <br/>
+            Events for these listeners are dispatched by a different thread than the one that generates them. 
+            This means that, upon reception of an event, it is possible that the internal state of the client has changed.
+            On the other hand, all the notifications for a single LightstreamerClient, including notifications to
+            <seealso cref="T:com.lightstreamer.client.ClientListener"/>s, <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/>s and <seealso cref="T:com.lightstreamer.client.ClientMessageListener"/>s will be dispatched by the 
+            same thread.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientListener.onListenEnd">
+            <summary>
+            Event handler that receives a notification when the ClientListener instance is removed from a LightstreamerClient 
+            through <c>LightstreamerClient.removeListener(ClientListener)</c>. This is the last event to be fired on the listener. </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientListener.onListenStart">
+            <summary>
+            Event handler that receives a notification when the ClientListener instance is added to a LightstreamerClient 
+            through <c>LightstreamerClient.addListener(ClientListener)</c>. This is the first event to be fired on the listener. </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientListener.onServerError(System.Int32,System.String)">
+            <summary>
+            Event handler that is called when the Server notifies a refusal on the client attempt to open
+            a new connection or the interruption of a streaming connection.
+            In both cases, the <seealso cref="M:com.lightstreamer.client.ClientListener.onStatusChange(System.String)"/> event handler has already been invoked
+            with a "DISCONNECTED" status and no recovery attempt has been performed.
+            By setting a custom handler, however, it is possible to override this and perform custom recovery actions.
+            </summary>
+            <param name="errorCode"> The error code. It can be one of the following:
+            <ul>
+              <li>1 - user/password check failed </li>
+              <li>2 - requested Adapter Set not available</li>
+              <li>7 - licensed maximum number of sessions reached (this can only happen with some licenses)</li>
+              <li>8 - configured maximum number of sessions reached</li>
+              <li>9 - configured maximum server load reached</li>
+              <li>10 - new sessions temporarily blocked</li>
+              <li>11 - streaming is not available because of Server license restrictions (this can only happen with special licenses).</li>
+              <li>21 - a request for this session has unexpectedly reached a wrong Server instance, which suggests that a routing issue may be in place.</li>
+              <li>30-41 - the current connection or the whole session has been closed by external agents; the possible cause may be:
+                <ul>
+                  <li>The session was closed by the administrator, through JMX (32) or through a "destroy" request (31);</li>
+                  <li>The Metadata Adapter imposes limits on the overall open sessions for the current user and has requested 
+                      the closure of the current session upon opening of a new session for the same user on a different browser 
+                      window (35);</li>
+                  <li>An unexpected error occurred on the Server while the session was in activity (33, 34);</li>
+                  <li>An unknown or unexpected cause; any code different from the ones identified in the above cases could be 
+                      issued. A detailed description for the specific cause is currently not supplied (i.e. errorMessage is 
+                      null in this case).</li>
+              </ul></li>
+              <li>60 - this version of the client is not allowed by the current license terms.</li>
+              <li>61 - there was an error in the parsing of the server response thus the client cannot continue with the current session.</li>
+              <li>66 - an unexpected exception was thrown by the Metadata Adapter while authorizing the connection.</li>
+              <li>68 - the Server could not open or continue with the session because of an internal error.</li>
+              <li>70 - an unusable port was configured on the server address.</li>
+              <li>71 - this kind of client is not allowed by the current license terms.</li>
+              <li>&lt;= 0 - the Metadata Adapter has refused the user connection; the code value is dependent on the specific 
+                  Metadata Adapter implementation</li>
+            </ul>
+            </param>
+            <param name="errorMessage"> The description of the error as sent by the Server.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onStatusChange(System.String)" />
+            <c>ConnectionDetails.AdapterSet</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientListener.onStatusChange(System.String)">
+            <summary>
+            Event handler that receives a notification each time the LightstreamerClient status has changed. The status changes 
+            may be originated either by custom actions (e.g. by calling <c>LightstreamerClient.disconnect</c>) or by internal 
+            actions.
+            The normal cases are the following:
+            <ul>
+              <li>After issuing connect() when the current status is "DISCONNECTED*", the client will switch to "CONNECTING" 
+                  first and to "CONNECTED:STREAM-SENSING" as soon as the pre-flight request receives its answer.<br/> 
+                  As soon as the new session is established, it will switch to "CONNECTED:WS-STREAMING" if the environment 
+                  permits WebSockets; otherwise it will switch to "CONNECTED:HTTP-STREAMING" if the environment permits streaming 
+                  or to "CONNECTED:HTTP-POLLING" as a last resort.</li>
+              <li>On the other hand, after issuing connect when the status is already "CONNECTED:*" a switch to "CONNECTING"
+                  is usually not needed and the current session is kept.</li>
+              <li>After issuing <c>LightstreamerClient.disconnect</c>, the status will switch to "DISCONNECTED".</li>
+              <li>In case of a server connection refusal, the status may switch from "CONNECTING" directly to "DISCONNECTED". 
+                  After that, the <seealso cref="M:com.lightstreamer.client.ClientListener.onServerError(System.Int32,System.String)"/> event handler will be invoked.</li>
+            </ul>
+            Possible special cases are the following:
+            <ul>
+              <li>In case of Server unavailability during streaming, the status may switch from "CONNECTED:*-STREAMING" 
+                  to "STALLED" (see <c>ConnectionOptions.StalledTimeout</c>). If the unavailability ceases, the status 
+                  will switch back to "CONNECTED:*-STREAMING"; otherwise, if the unavailability persists 
+                  (see <c>ConnectionOptions.ReconnectTimeout</c>), the status will switch to "DISCONNECTED:TRYING-RECOVERY"
+                  and eventually to "CONNECTED:*-STREAMING".</li>
+              <li>In case the connection or the whole session is forcibly closed by the Server, the status may switch 
+                  from "CONNECTED:*-STREAMING" or "CONNECTED:*-POLLING" directly to "DISCONNECTED". After that, 
+                  the <seealso cref="M:com.lightstreamer.client.ClientListener.onServerError(System.Int32,System.String)"/> event handler will be invoked.</li>
+              <li>Depending on the setting in <c>ConnectionOptions.SlowingEnabled</c>, in case of slow update processing, 
+                  the status may switch from "CONNECTED:WS-STREAMING" to "CONNECTED:WS-POLLING" or from "CONNECTED:HTTP-STREAMING" 
+                  to "CONNECTED:HTTP-POLLING".</li>
+              <li>If the status is "CONNECTED:*-POLLING" and any problem during an intermediate poll occurs, the status may 
+                  switch to "CONNECTING" and eventually to "CONNECTED:*-POLLING". The same may hold for the "CONNECTED:*-STREAMING" case, 
+                  when a rebind is needed.</li>
+              <li>In case a forced transport was set through <c>ConnectionOptions.ForcedTransport</c>, only the 
+                  related final status or statuses are possible.</li>
+              <li>In case of connection problems, the status may switch from any value
+                  to "DISCONNECTED:WILL-RETRY" (see <c>ConnectionOptions.RetryDelay</c>),
+                  then to "CONNECTING" and a new attempt will start.
+                  However, in most cases, the client will try to recover the current session;
+                  hence, the "DISCONNECTED:TRYING-RECOVERY" status will be used and the recovery attempt will start.</li>
+              <li>In case of connection problems during a recovery attempt, the status may stay
+                  in "DISCONNECTED:TRYING-RECOVERY" for long time, while further attempts are made.
+                  If the recovery is no longer possible, the current session will be abandoned
+                  and the status will switch to "DISCONNECTED:WILL-RETRY" before the next attempts.</li>
+            </ul>
+            By setting a custom handler it is possible to perform actions related to connection and disconnection occurrences. 
+            Note that <c>LightstreamerClient.connect</c> and <c>LightstreamerClient.disconnect</c>, as any other method, can 
+            be issued directly from within a handler.
+            </summary>
+            <param name="status"> The new status. It can be one of the following values:
+            <ul>
+              <li>"CONNECTING" the client has started a connection attempt and is waiting for a Server answer.</li>
+              <li>"CONNECTED:STREAM-SENSING" the client received a first response from the server and is now evaluating if 
+              a streaming connection is fully functional.</li>
+              <li>"CONNECTED:WS-STREAMING" a streaming connection over WebSocket has been established.</li>
+              <li>"CONNECTED:HTTP-STREAMING" a streaming connection over HTTP has been established.</li>
+              <li>"CONNECTED:WS-POLLING" a polling connection over WebSocket has been started. Note that, unlike polling over 
+              HTTP, in this case only one connection is actually opened (see <c>ConnectionOptions.SlowingEnabled</c>).</li>
+              <li>"CONNECTED:HTTP-POLLING" a polling connection over HTTP has been started.</li>
+              <li>"STALLED" a streaming session has been silent for a while, the status will eventually return to its previous 
+              CONNECTED:*-STREAMING status or will switch to "DISCONNECTED:WILL-RETRY".</li>
+              <li>"DISCONNECTED:WILL-RETRY" a connection or connection attempt has been closed; a new attempt will be 
+              performed after a timeout.</li>
+              <li>"DISCONNECTED:TRYING-RECOVERY" a connection has been closed and
+              the client has started a connection attempt and is waiting for a Server answer;
+              if successful, the underlying session will be kept.</li>
+              <li>"DISCONNECTED" a connection or connection attempt has been closed. The client will not connect anymore until 
+              a new <c>LightstreamerClient.connect</c> call is issued.</li>
+            </ul>
+            </param>
+            <c>LightstreamerClient.connect</c>
+            <c>LightstreamerClient.disconnect</c>
+            <c>LightstreamerClient.Status</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)">
+            <summary>
+            Event handler that receives a notification each time  the value of a property of 
+            <c>LightstreamerClient.connectionDetails</c> or <c>LightstreamerClient.connectionOptions</c> 
+            is changed. <br/>
+            Properties of these objects can be modified by direct calls to them or
+            by server sent events.
+            </summary>
+            <param name="property"> the name of the changed property.
+            <br/>Possible values are:
+            <ul>
+            <li>adapterSet</li>
+            <li>serverAddress</li>
+            <li>user</li>
+            <li>password</li>
+            <li>contentLength</li>
+            <li>requestedMaxBandwidth</li>
+            <li>reverseHeartbeatInterval</li>
+            <li>httpExtraHeaders</li>
+            <li>httpExtraHeadersOnSessionCreationOnly</li>
+            <li>forcedTransport</li>
+            <li>retryDelay</li>
+            <li>firstRetryMaxDelay</li>
+            <li>sessionRecoveryTimeout</li>
+            <li>stalledTimeout</li>
+            <li>reconnectTimeout</li>
+            <li>slowingEnabled</li>
+            <li>serverInstanceAddressIgnored</li>
+            <li>cookieHandlingRequired</li>
+            <li>proxy</li>
+            <li>serverInstanceAddress</li>
+            <li>serverSocketName</li>
+            <li>clientIp</li>
+            <li>sessionId</li>
+            <li>realMaxBandwidth</li>
+            <li>idleTimeout</li>
+            <li>keepaliveInterval</li>
+            <li>pollingInterval</li>
+            </ul>
+            </param>
+            <c>LightstreamerClient.connectionDetails</c>
+            <c>LightstreamerClient.connectionOptions</c>
+        </member>
+        <member name="T:com.lightstreamer.client.ClientMessageListener">
+            <summary>
+            Interface to be implemented to listen to <c>LightstreamerClient.sendMessage(string) </c> events reporting a message processing outcome. 
+            Events for these listeners are dispatched by a different thread than the one that generates them.
+            All the notifications for a single LightstreamerClient, including notifications to
+            <seealso cref="T:com.lightstreamer.client.ClientListener"/>s, <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/>s and <seealso cref="T:com.lightstreamer.client.ClientMessageListener"/>s will be dispatched by the 
+            same thread.
+            Only one event per message is fired on this listener.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientMessageListener.onAbort(System.String,System.Boolean)">
+            <summary>
+            Event handler that is called by Lightstreamer when any notifications of the processing outcome of the related 
+            message haven't been received yet and can no longer be received. Typically, this happens after the session 
+            has been closed. In this case, the client has no way of knowing the processing outcome and any outcome is possible. </summary>
+            <param name="originalMessage"> the message to which this notification is related. </param>
+            <param name="sentOnNetwork"> true if the message was sent on the network, false otherwise. 
+                   Even if the flag is true, it is not possible to infer whether the message actually reached the 
+                   Lightstreamer Server or not. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientMessageListener.onDeny(System.String,System.Int32,System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer when the related message has been processed by the Server but the 
+            expected processing outcome could not be achieved for any reason. </summary>
+            <param name="originalMessage"> the message to which this notification is related. </param>
+            <param name="code"> the error code sent by the Server. It can be one of the following:
+                   <ul><li>&lt;= 0 - the Metadata Adapter has refused the message; the code value is dependent on the 
+                   specific Metadata Adapter implementation.</li></ul> </param>
+            <param name="error"> the description of the error sent by the Server. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientMessageListener.onDiscarded(System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that the related message has been discarded by the Server.
+            This means that the message has not reached the Metadata Adapter and the message next in the sequence is considered 
+            enabled for processing. </summary>
+            <param name="originalMessage"> the message to which this notification is related. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientMessageListener.onError(System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer when the related message has been processed by the Server but the 
+            processing has failed for any reason. The level of completion of the processing by the Metadata Adapter cannot be 
+            determined. </summary>
+            <param name="originalMessage"> the message to which this notification is related. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.ClientMessageListener.onProcessed(System.String,System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer when the related message has been processed by the Server with success. </summary>
+            <param name="originalMessage"> the message to which this notification is related. </param>
+            <param name="response"> the response from the Metadata Adapter. If not supplied (i.e. supplied as null), an empty message is received here. </param>
+        </member>
+        <member name="T:com.lightstreamer.client.ItemUpdate">
+            <summary>
+            Contains all the information related to an update of the field values for an item. 
+            It reports all the new values of the fields.<br/>
+            <br/>
+            <b>COMMAND Subscription</b><br/>
+            If the involved Subscription is a COMMAND Subscription, then the values for the current 
+            update are meant as relative to the same key.<br/>
+            Moreover, if the involved Subscription has a two-level behavior enabled, then each update 
+            may be associated with either a first-level or a second-level item. In this case, the reported 
+            fields are always the union of the first-level and second-level fields and each single update 
+            can only change either the first-level or the second-level fields (but for the "command" field, 
+            which is first-level and is always set to "UPDATE" upon a second-level update); note 
+            that the second-level field values are always null until the first second-level update 
+            occurs). When the two-level behavior is enabled, in all methods where a field name has to 
+            be supplied, the following convention should be followed:<br/>
+            <br/>
+            <ul>
+             <li>The field name can always be used, both for the first-level and the second-level fields. 
+             In case of name conflict, the first-level field is meant.</li>
+             <li>The field position can always be used; however, the field positions for the second-level 
+             fields start at the highest position of the first-level field list + 1. If a field schema had 
+             been specified for either first-level or second-level Subscriptions, then client-side knowledge 
+             of the first-level schema length would be required.</li>
+            </ul>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.ItemName">
+            <value>
+            Read-only property <c>ItemName</c> represents the name of the item to which this update pertains.<br/> 
+            The name will be null if the related Subscription was initialized using an "Item Group".<br/>
+            See also: <c>Subscription.ItemGroup</c>, <c>Subscription.Items</c>.<br/>
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.ItemPos">
+            <value>
+            Read-only property <c>ItemPos</c> represents the 1-based the position in the "Item List" or
+            "Item Group" of the item to which this update pertains.<br/>
+            See also: <c>Subscription.ItemGroup</c>, <c>Subscription.Items</c>.<br/>
+            </value>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.getValue(System.String)">
+            <summary>
+            Returns the current value for the specified field 
+            </summary>
+            <param name="fieldName"> The field name as specified within the "Field List". </param>
+            <returns> The value of the specified field; it can be null in the following cases:<br/>
+            <ul>
+             <li>a null value has been received from the Server, as null is a possible value for a field;</li>
+             <li>no value has been received for the field yet;</li>
+             <li>the item is subscribed to with the COMMAND mode and a DELETE command is received 
+             (only the fields used to carry key and command informations are valued).</li>
+            </ul> 
+            </returns>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.getValue(System.Int32)">
+            <summary>
+            Returns the current value for the specified field </summary>
+            <param name="fieldPos"> The 1-based position of the field within the "Field List" or
+            "Field Schema".</param>
+            <returns> The value of the specified field; it can be null in the following cases:<br/>
+            <ul>
+             <li>a null value has been received from the Server, as null is a possible value for a field;</li>
+             <li>no value has been received for the field yet;</li>
+             <li>the item is subscribed to with the COMMAND mode and a DELETE command is received 
+             (only the fields used to carry key and command informations are valued).</li>
+            </ul> </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.Snapshot">
+            <summary>
+            Inquiry method that asks whether the current update belongs to the item snapshot (which carries 
+            the current item state at the time of Subscription). Snapshot events are sent only if snapshot 
+            information was requested for the items through <c>Subscription.RequestedSnapshot</c> 
+            and precede the real time events. Snapshot informations take different forms in different 
+            subscription modes and can be spanned across zero, one or several update events. In particular:
+            <ul>
+             <li>if the item is subscribed to with the RAW subscription mode, then no snapshot is 
+             sent by the Server;</li>
+             <li>if the item is subscribed to with the MERGE subscription mode, then the snapshot consists 
+             of exactly one event, carrying the current value for all fields;</li>
+             <li>if the item is subscribed to with the DISTINCT subscription mode, then the snapshot 
+             consists of some of the most recent updates; these updates are as many as specified 
+             through <c>Subscription.RequestedSnapshot</c>, unless fewer are available;</li>
+             <li>if the item is subscribed to with the COMMAND subscription mode, then the snapshot 
+             consists of an "ADD" event for each key that is currently present.</li>
+            </ul>
+            Note that, in case of two-level behavior, snapshot-related updates for both the first-level item
+            (which is in COMMAND mode) and any second-level items (which are in MERGE mode) are qualified with 
+            this flag. </summary>
+            <returns> true if the current update event belongs to the item snapshot; false otherwise. </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.isValueChanged(System.String)">
+            <summary>
+            Inquiry method that asks whether the value for a field has changed after the reception of the last 
+            update from the Server for an item. If the Subscription mode is COMMAND then the change is meant as 
+            relative to the same key. </summary>
+            <param name="fieldName"> The field name as specified within the "Field List". </param>
+            <returns> Unless the Subscription mode is COMMAND, the return value is true in the following cases:
+            <ul>
+             <li>It is the first update for the item;</li>
+             <li>the new field value is different than the previous field 
+             value received for the item.</li>
+            </ul>
+             If the Subscription mode is COMMAND, the return value is true in the following cases:
+            <ul>
+             <li>it is the first update for the involved key value (i.e. the event carries an "ADD" command);</li>
+             <li>the new field value is different than the previous field value received for the item, 
+             relative to the same key value (the event must carry an "UPDATE" command);</li>
+             <li>the event carries a "DELETE" command (this applies to all fields other than the field 
+             used to carry key information).</li>
+            </ul>
+            In all other cases, the return value is false. </returns>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.isValueChanged(System.Int32)">
+            <summary>
+            Inquiry method that asks whether the value for a field has changed after the reception of the last 
+            update from the Server for an item. If the Subscription mode is COMMAND then the change is meant as 
+            relative to the same key. </summary>
+            <param name="fieldPos"> The 1-based position of the field within the "Field List" or "Field Schema". </param>
+            <returns> Unless the Subscription mode is COMMAND, the return value is true in the following cases:
+            <ul>
+             <li>It is the first update for the item;</li>
+             <li>the new field value is different than the previous field 
+             value received for the item.</li>
+            </ul>
+             If the Subscription mode is COMMAND, the return value is true in the following cases:
+            <ul>
+             <li>it is the first update for the involved key value (i.e. the event carries an "ADD" command);</li>
+             <li>the new field value is different than the previous field value received for the item, 
+             relative to the same key value (the event must carry an "UPDATE" command);</li>
+             <li>the event carries a "DELETE" command (this applies to all fields other than the field 
+             used to carry key information).</li>
+            </ul>
+            In all other cases, the return value is false. </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.getValueAsJSONPatchIfAvailable(System.String)">
+            <summary>
+            Inquiry method that gets the difference between the new value and the previous one
+            as a JSON Patch structure, provided that the Server has used the JSON Patch format
+            to send this difference, as part of the "delta delivery" mechanism.
+            This, in turn, requires that:<ul>
+            <li>the Data Adapter has explicitly indicated JSON Patch as the privileged type of
+            compression for this field;</li>
+            <li>both the previous and new value are suitable for the JSON Patch computation
+            (i.e. they are valid JSON representations);</li>
+            <li>the item was subscribed to in MERGE or DISTINCT mode (note that, in case of
+            two-level behavior, this holds for all fields related with second-level items,
+            as these items are in MERGE mode);</li>
+            <li>sending the JSON Patch difference has been evaluated by the Server as more
+            efficient than sending the full new value.</li>
+            </ul>
+            Note that the last condition can be enforced by leveraging the Server's
+            &lt;jsonpatch_min_length&gt; configuration flag, so that the availability of the
+            JSON Patch form would only depend on the Client and the Data Adapter.
+            <br/>When the above conditions are not met, the method just returns null; in this
+            case, the new value can only be determined through <seelaso cref="M:com.lightstreamer.client.ItemUpdate.getValue(System.String)" />. For instance,
+            this will always be needed to get the first value received.</summary>
+            
+            <exception cref="T:System.ArgumentException"> if the specified field is not
+            part of the Subscription.</exception>
+            
+            <param name="fieldName"> The field name as specified within the "Field List".</param>
+            
+            <returns> A JSON Patch structure representing the difference between
+            the new value and the previous one, or null if the difference in JSON Patch format
+            is not available for any reason.</returns>
+            
+            <c>ItemUpdate.getValue</c>
+        </member>
+        <member name="M:com.lightstreamer.client.ItemUpdate.getValueAsJSONPatchIfAvailable(System.Int32)">
+            <summary>
+            Inquiry method that gets the difference between the new value and the previous one
+            as a JSON Patch structure, provided that the Server has used the JSON Patch format
+            to send this difference, as part of the "delta delivery" mechanism.
+            This, in turn, requires that:<ul>
+            <li>the Data Adapter has explicitly indicated JSON Patch as the privileged type of
+            compression for this field;</li>
+            <li>both the previous and new value are suitable for the JSON Patch computation
+            (i.e. they are valid JSON representations);</li>
+            <li>the item was subscribed to in MERGE or DISTINCT mode (note that, in case of
+            two-level behavior, this holds for all fields related with second-level items,
+            as these items are in MERGE mode);</li>
+            <li>sending the JSON Patch difference has been evaluated by the Server as more
+            efficient than sending the full new value.</li>
+            </ul>
+            Note that the last condition can be enforced by leveraging the Server's
+            &lt;jsonpatch_min_length&gt; configuration flag, so that the availability of the
+            JSON Patch form would only depend on the Client and the Data Adapter.
+            <br/>When the above conditions are not met, the method just returns null; in this
+            case, the new value can only be determined through <seelaso cref="M:com.lightstreamer.client.ItemUpdate.getValue(System.Int32)" />. For instance,
+            this will always be needed to get the first value received.</summary>
+            
+            <exception cref="T:System.ArgumentException"> if the specified field is not
+            part of the Subscription.</exception>
+            
+            <param name="fieldPos"> The 1-based position of the field within the "Field List" or "Field Schema".</param>
+            
+            <returns> A JSON Patch structure representing the difference between
+            the new value and the previous one, or null if the difference in JSON Patch format
+            is not available for any reason.</returns>
+            
+            <c>ItemUpdate.getValue</c>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.ChangedFields">
+            <summary>
+            Returns an immutable Map containing the values for each field changed with the last server update. 
+            The related field name is used as key for the values in the map. 
+            Note that if the Subscription mode of the involved Subscription is COMMAND, then changed fields 
+            are meant as relative to the previous update for the same key. On such tables if a DELETE command 
+            is received, all the fields, excluding the key field, will be present as changed, with null value. 
+            All of this is also true on tables that have the two-level behavior enabled, but in case of 
+            DELETE commands second-level fields will not be iterated.
+            </summary>
+            <returns> An immutable Map containing the values for each field changed with the last
+            server update.
+            </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.ChangedFieldsByPosition">
+            <summary>
+            Returns an immutable Map containing the values for each field changed with the last server update. 
+            The 1-based field position within the field schema or field list is used as key for the values in the map. 
+            Note that if the Subscription mode of the involved Subscription is COMMAND, then changed fields 
+            are meant as relative to the previous update for the same key. On such tables if a DELETE command 
+            is received, all the fields, excluding the key field, will be present as changed, with null value. 
+            All of this is also true on tables that have the two-level behavior enabled, but in case of 
+            DELETE commands second-level fields will not be iterated.
+            </summary>
+            <returns> An immutable Map containing the values for each field changed with the last server update.
+            </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.Fields">
+            <summary>
+            Returns an immutable Map containing the values for each field in the Subscription.
+            The related field name is used as key for the values in the map. 
+            </summary>
+            <returns> An immutable Map containing the values for each field in the Subscription.
+            </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="P:com.lightstreamer.client.ItemUpdate.FieldsByPosition">
+            <summary>
+            Returns an immutable Map containing the values for each field in the Subscription.
+            The 1-based field position within the field schema or field list is used as key for the values in the map. 
+            </summary>
+            <returns> An immutable Map containing the values for each field in the Subscription.
+            </returns>
+            <c>Subscription.FieldSchema</c>
+            <c>Subscription.Fields</c>
+        </member>
+        <member name="T:com.lightstreamer.client.SubscriptionListener">
+            <summary>
+            Interface to be implemented to listen to <c>Subscription</c> events comprehending notifications of subscription/unsubscription, 
+            updates, errors and others.<br/>
+            Events for this listeners are executed asynchronously with respect to the code that generates them. 
+            This means that, upon reception of an event, it is possible that the internal state of the client has changed.
+            On the other hand, all the notifications for a single LightstreamerClient, including notifications to
+            <seealso cref="T:com.lightstreamer.client.ClientListener"/>s, <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/>s and <seealso cref="T:com.lightstreamer.client.ClientMessageListener"/>s will be dispatched by the 
+            same thread.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onClearSnapshot(System.String,System.Int32)">
+            <summary>
+            Event handler that is called by Lightstreamer each time a request to clear the snapshot pertaining to an item 
+            in the Subscription has been received from the Server. More precisely, this kind of request can occur in two cases:
+            <ul>
+              <li>For an item delivered in COMMAND mode, to notify that the state of the item becomes empty; this is 
+                  equivalent to receiving an update carrying a DELETE command once for each key that is currently active.</li>
+              <li>For an item delivered in DISTINCT mode, to notify that all the previous updates received for the item 
+                  should be considered as obsolete; hence, if the listener were showing a list of recent updates for the item, it 
+                  should clear the list in order to keep a coherent view.</li>
+            </ul>
+            Note that, if the involved Subscription has a two-level behavior enabled
+            (see <c>Subscription.CommandSecondLevelFields</c> and <c>Subscription.CommandSecondLevelFieldSchema</c>)
+            , the notification refers to the first-level item (which is in COMMAND mode).
+            This kind of notification is not possible for second-level items (which are in MERGE 
+            mode).
+            </summary>
+            <param name="itemName"> name of the involved item. If the Subscription was initialized using an "Item Group" then a 
+                   null value is supplied. </param>
+            <param name="itemPos"> 1-based position of the item within the "Item List" or "Item Group". </param>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onCommandSecondLevelItemLostUpdates(System.Int32,System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that, due to internal resource limitations, 
+            Lightstreamer Server dropped one or more updates for an item that was subscribed to as a second-level subscription. 
+            Such notifications are sent only if the Subscription was configured in unfiltered mode (second-level items are 
+            always in "MERGE" mode and inherit the frequency configuration from the first-level Subscription). <br/> 
+            By implementing this method it is possible to perform recovery actions.
+            </summary>
+            <param name="lostUpdates"> The number of consecutive updates dropped for the item. </param>
+            <param name="key"> The value of the key that identifies the second-level item.
+            </param>
+            <c>Subscription.RequestedMaxFrequency</c>
+            <c>Subscription.CommandSecondLevelFields</c>
+            <c>Subscription.CommandSecondLevelFieldSchema</c>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onCommandSecondLevelSubscriptionError(System.Int32,System.String,System.String)">
+            <summary>
+            Event handler that is called when the Server notifies an error on a second-level subscription.<br/> 
+            By implementing this method it is possible to perform recovery actions.
+            </summary>
+            <param name="code"> The error code sent by the Server. It can be one of the following:
+                   <ul>
+                     <li>14 - the key value is not a valid name for the Item to be subscribed; only in this case, the error 
+                         is detected directly by the library before issuing the actual request to the Server</li>
+                     <li>17 - bad Data Adapter name or default Data Adapter not defined for the current Adapter Set</li>
+                     <li>21 - bad Group name</li>
+                     <li>22 - bad Group name for this Schema</li>
+                     <li>23 - bad Schema name</li>
+                     <li>24 - mode not allowed for an Item</li>
+                     <li>26 - unfiltered dispatching not allowed for an Item, because a frequency limit is associated 
+                         to the item</li>
+                     <li>27 - unfiltered dispatching not supported for an Item, because a frequency prefiltering is 
+                         applied for the item</li>
+                     <li>28 - unfiltered dispatching is not allowed by the current license terms (for special licenses 
+                         only)</li>
+                     <li>66 - an unexpected exception was thrown by the Metadata Adapter while authorizing the connection</li>
+                     <li>68 - the Server could not fulfill the request because of an internal error.</li>
+                     <li>&lt;= 0 - the Metadata Adapter has refused the subscription or unsubscription request; the 
+                         code value is dependent on the specific Metadata Adapter implementation</li>
+                   </ul>
+            </param>
+            <param name="message"> The description of the error sent by the Server; it can be null. </param>
+            <param name="key"> The value of the key that identifies the second-level item.
+            </param>
+            <c>ConnectionDetails.AdapterSet</c>
+            <c>Subscription.CommandSecondLevelFields</c>
+            <c>Subscription.CommandSecondLevelFieldSchema</c>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onEndOfSnapshot(System.String,System.Int32)">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that all snapshot events for an item in the 
+            Subscription have been received, so that real time events are now going to be received. The received 
+            snapshot could be empty. Such notifications are sent only if the items are delivered in DISTINCT or COMMAND 
+            subscription mode and snapshot information was indeed requested for the items. By implementing this 
+            method it is possible to perform actions which require that all the initial values have been received.<br/>
+            Note that, if the involved Subscription has a two-level behavior enabled
+            (see <c>Subscription.CommandSecondLevelFields</c> and <c>Subscription.CommandSecondLevelFieldSchema</c>)
+            , the notification refers to the first-level item (which is in COMMAND mode).
+            Snapshot-related updates for the second-level items 
+            (which are in MERGE mode) can be received both before and after this notification.
+            </summary>
+            <param name="itemName"> name of the involved item. If the Subscription was initialized using an "Item Group" then a 
+                   null value is supplied. </param>
+            <param name="itemPos"> 1-based position of the item within the "Item List" or "Item Group".
+            </param>
+            <c>Subscription.RequestedSnapshot</c>
+            <c>ItemUpdate.isSnapshot</c>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onItemLostUpdates(System.String,System.Int32,System.Int32)">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that, due to internal resource limitations, 
+            Lightstreamer Server dropped one or more updates for an item in the Subscription. 
+            Such notifications are sent only if the items are delivered in an unfiltered mode; this occurs if the 
+            subscription mode is:
+            <ul>
+              <li>RAW</li>
+              <li>MERGE or DISTINCT, with unfiltered dispatching specified</li>
+              <li>COMMAND, with unfiltered dispatching specified</li>
+              <li>COMMAND, without unfiltered dispatching specified (in this case, notifications apply to ADD 
+                  and DELETE events only)</li>
+            </ul>
+            By implementing this method it is possible to perform recovery actions.
+            </summary>
+            <param name="itemName"> name of the involved item. If the Subscription was initialized using an "Item Group" then a 
+                   null value is supplied. </param>
+            <param name="itemPos"> 1-based position of the item within the "Item List" or "Item Group". </param>
+            <param name="lostUpdates"> The number of consecutive updates dropped for the item.
+            </param>
+            <c>Subscription.RequestedMaxFrequency</c>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onItemUpdate(com.lightstreamer.client.ItemUpdate)">
+            <summary>
+            Event handler that is called by Lightstreamer each time an update pertaining to an item in the Subscription
+            has been received from the Server. The updated values for all the fields are contained in a value object 
+            of type <seealso cref="T:com.lightstreamer.client.ItemUpdate"/>.
+            </summary>
+            <param name="itemUpdate"> a value object containing the updated values for all the fields, together with meta-information 
+            about the update itself and some helper methods that can be used to iterate through all or new values. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onListenEnd">
+            <summary>
+            Event handler that receives a notification when the SubscriptionListener instance is removed from a Subscription 
+            through <c>Subscription.removeListener</c>. This is the last event to be fired on the listener.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onListenStart">
+            <summary>
+            Event handler that receives a notification when the SubscriptionListener instance is added to a Subscription 
+            through <c>Subscription.addListener</c>. This is the first event to be fired on the listener.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onSubscription">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that a Subscription has been successfully subscribed 
+            to through the Server. This can happen multiple times in the life of a Subscription instance, in case the 
+            Subscription is performed multiple times through <c>LightstreamerClient.unsubscribe</c> and 
+            <c>LightstreamerClient.subscribe</c>. This can also happen multiple times in case of automatic 
+            recovery after a connection restart.<br/> 
+            This notification is always issued before the other ones related to the same subscription. It invalidates all 
+            data that has been received previously.<br/>
+            Note that two consecutive calls to this method are not possible, as before a second onSubscription event is 
+            fired an <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onUnsubscription"/> event is eventually fired.<br/> 
+            If the involved Subscription has a two-level behavior enabled
+            (see <c>Subscription.CommandSecondLevelFields</c> and <c>Subscription.CommandSecondLevelFieldSchema</c>)
+            , second-level subscriptions are not notified.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onSubscriptionError(System.Int32,System.String)">
+            <summary>
+            Event handler that is called when the Server notifies an error on a Subscription. By implementing this method it 
+            is possible to perform recovery actions.<br/>
+            Note that, in order to perform a new subscription attempt, <c>LightstreamerClient.unsubscribe</c>
+            and <c>LightstreamerClient.subscribe</c> should be issued again, even if no change to the Subscription 
+            attributes has been applied.
+            </summary>
+            <param name="code"> The error code sent by the Server. It can be one of the following:
+                   <ul>
+                     <li>15 - "key" field not specified in the schema for a COMMAND mode subscription</li>
+                     <li>16 - "command" field not specified in the schema for a COMMAND mode subscription</li>
+                     <li>17 - bad Data Adapter name or default Data Adapter not defined for the current Adapter Set</li>
+                     <li>21 - bad Group name</li>
+                     <li>22 - bad Group name for this Schema</li>
+                     <li>23 - bad Schema name</li>
+                     <li>24 - mode not allowed for an Item</li>
+                     <li>25 - bad Selector name</li>
+                     <li>26 - unfiltered dispatching not allowed for an Item, because a frequency limit is associated 
+                         to the item</li>
+                     <li>27 - unfiltered dispatching not supported for an Item, because a frequency prefiltering is 
+                         applied for the item</li>
+                     <li>28 - unfiltered dispatching is not allowed by the current license terms (for special licenses 
+                         only)</li>
+                     <li>29 - RAW mode is not allowed by the current license terms (for special licenses only)</li>
+                     <li>61 - there was an error in the parsing of the server response</li>
+                     <li>30 - subscriptions are not allowed by the current license terms (for special licenses only)</li>
+                     <li>66 - an unexpected exception was thrown by the Metadata Adapter while authorizing the connection</li>
+                     <li>68 - the Server could not fulfill the request because of an internal error.</li>
+                     <li>&lt;= 0 - the Metadata Adapter has refused the subscription or unsubscription request; the 
+                         code value is dependent on the specific Metadata Adapter implementation</li>
+                   </ul>
+            </param>
+            <param name="message"> The description of the error sent by the Server; it can be null.
+            </param>
+            <c>ConnectionDetails.AdapterSet</c>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onUnsubscription">
+            <summary>
+            Event handler that is called by Lightstreamer to notify that a Subscription has been successfully unsubscribed 
+            from. This can happen multiple times in the life of a Subscription instance, in case the Subscription is performed 
+            multiple times through <c>LightstreamerClient.unsubscribe(Subscription)</c> and 
+            <c>LightstreamerClient.subscribe(Subscription)</c>. This can also happen multiple times in case of automatic 
+            recovery after a connection restart.<br/>
+            After this notification no more events can be received until a new <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onSubscription"/> event.<br/> 
+            Note that two consecutive calls to this method are not possible, as before a second onUnsubscription event 
+            is fired an <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onSubscription"/> event is eventually fired.<br/> 
+            If the involved Subscription has a two-level behavior enabled
+            (see <c>Subscription.CommandSecondLevelFields</c> and <c>Subscription.CommandSecondLevelFieldSchema</c>)
+            , second-level unsubscriptions are not notified.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.SubscriptionListener.onRealMaxFrequency(System.String)">
+            <summary>
+            Event handler that is called by Lightstreamer to notify the client with the real maximum update frequency of the Subscription. 
+            It is called immediately after the Subscription is established and in response to a requested change
+            (see <c>Subscription.requestedMaxFrequency</c>).
+            Since the frequency limit is applied on an item basis and a Subscription can involve multiple items,
+            this is actually the maximum frequency among all items. For Subscriptions with two-level behavior
+            (see <c>Subscription.CommandSecondLevelFields</c> and <c>Subscription.CommandSecondLevelFieldSchema</c>)
+            , the reported frequency limit applies to both first-level and second-level items.<br/>
+            The value may differ from the requested one because of restrictions operated on the server side,
+            but also because of number rounding.<br/>
+            Note that a maximum update frequency (that is, a non-unlimited one) may be applied by the Server
+            even when the subscription mode is RAW or the Subscription was done with unfiltered dispatching.
+            </summary>
+            <param name="frequency">  A decimal number, representing the maximum frequency applied by the Server
+            (expressed in updates per second), or the string "unlimited". A null value is possible in rare cases,
+            when the frequency can no longer be determined. </param>
+        </member>
+        <member name="T:com.lightstreamer.log.ILogger">
+            <summary>
+            <para>Interface to be implemented to consume log from the library.</para>
+            <para>Instances of implemented classes are obtained by the library through the ILoggerProvider instance set on LightstreamerClient.setLoggerProvider.</para>
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Error(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Error level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Warn(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Warn level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Info(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Info level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Debug(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Debug level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Trace(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Trace level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.log.ILogger.Fatal(System.String,System.Exception)">
+            <summary>
+            <para>Receives log messages at Fatal level and a related exception.</para>
+            </summary>
+            <param name="line">
+            The message to be logged.
+            </param>
+            <param name="exception">
+            An Exception instance related to the current log message.
+            </param>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsDebugEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Debug level.</para>
+            <para>The property should be true if this logger is enabled for Debug events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Debug statements. Note 
+            that even if the property is false, Debug log lines may be received anyway by the Debug methods.</para>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsTraceEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Trace level.</para>
+            <para>The property should be true if this logger is enabled for Trace events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Trace statements. Note 
+            that even if the property is false, Trace log lines may be received anyway by the Trace methods.</para>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsInfoEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Info level.</para>
+            <para>The property should be true if this logger is enabled for Info events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Info statements. Note 
+            that even if the property is false, Info log lines may be received anyway by the Info methods.</para>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsWarnEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Warn level.</para>
+            <para>The property should be true if this logger is enabled for Warn events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Warn statements. Note 
+            that even if the property is false, Warn log lines may be received anyway by the Warn methods.</para>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsErrorEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Error level.</para>
+            <para>The property should be true if this logger is enabled for Error events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Error statements. Note 
+            that even if the property is false, Error log lines may be received anyway by the Error methods.</para>
+            </summary>
+        </member>
+        <member name="P:com.lightstreamer.log.ILogger.IsFatalEnabled">
+            <summary>
+            <para>Checks if this logger is enabled for the Fatal level.</para>
+            <para>The property should be true if this logger is enabled for Fatal events, false otherwise.</para> 
+            <para>This property is intended to lessen the computational cost of disabled log Fatal statements. Note 
+            that even if the property is false, Fatal log lines may be received anyway by the Fatal methods.</para>
+            </summary>
+        </member>
+        <member name="T:com.lightstreamer.log.ILoggerProvider">
+            <summary>
+            <para>Simple interface to be implemented to provide custom log consumers to the library.</para>
+            <para>An instance of the custom implemented class has to be passed to the library through the 
+            LightstreamerClient.setLoggerProvider method.</para>
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.log.ILoggerProvider.GetLogger(System.String)">
+            <summary>
+            <para>Request for an ILogger instance that will be used for logging occuring on the given 
+            category. It is suggested, but not mandatory, that subsequent calls to this method
+            related to the same category return the same ILogger instance.</para>
+            </summary>
+            <param name="category">the log category all messages passed to the given ILogger instance will pertain to.
+            </param>
+            <returns>
+            An ILogger instance that will receive log lines related to the given category.
+            </returns>
+        </member>
+    </members>
+</doc>

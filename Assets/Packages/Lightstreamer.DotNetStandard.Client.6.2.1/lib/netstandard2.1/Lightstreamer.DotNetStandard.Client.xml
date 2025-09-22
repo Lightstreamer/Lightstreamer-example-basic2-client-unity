@@ -1,0 +1,1731 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lightstreamer.DotNetStandard.Client</name>
+    </assembly>
+    <members>
+        <member name="T:com.lightstreamer.client.ConnectionDetails">
+            <summary>
+            Used by LightstreamerClient to provide a basic connection properties data object.
+            Data object that contains the configuration settings needed
+            to connect to a Lightstreamer Server. <br/>
+            An instance of this class is attached to every <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/>
+            as <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionDetails"/><br/>
+            </summary>
+            <seealso cref="T:com.lightstreamer.client.LightstreamerClient" />
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.AdapterSet">
+            <value>
+            Property <c>AdapterSet</c> represents the name of the Adapter Set (which defines the Metadata Adapter and one or several 
+            Data Adapters) mounted on Lightstreamer Server that supply all the items used in this application.
+            The name of the Adapter Set can be null if no name has been configured; that 
+            means that the "DEFAULT" Adapter Set name is used.<br/>
+            <br/>
+            <b>Lifecycle:</b> The Adapter Set name should be set on the <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionDetails" /> object before calling the 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at any time: the supplied value will be used for the
+            next time a new session is requested to the server. This setting can also be specified in the <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/> constructor.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "adapterSet" on any ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.ServerAddress">
+            <value>
+            Property <c>ServerAddress</c> represents the configured address of Lightstreamer Server.
+            Note that the addresses specified must always have the http: or https: scheme. In case WebSockets
+            are used, the specified scheme is internally converted to match the related WebSocket protocol
+            (i.e. http becomes ws while https becomes wss).
+            
+            A null value can also be used, to restore the default value. An IPv4 or IPv6 can also be used 
+            in place of a hostname. Some examples of valid values include: 
+            <ul><li>http://push.mycompany.com</li>
+            <li>http://push.mycompany.com:8080</li>
+            <li>http://79.125.7.252</li>
+            <li>http://[2001:0db8:85a3:0000:0000:8a2e:0370:7334]</li>
+            <li>http://[2001:0db8:85a3::8a2e:0370:7334]:8080</li>
+            </ul>
+            <br/>
+            <b>Edition Note:</b> WSS/HTTPS is an optional feature, available depending on Edition and License
+            Type. To know what features are enabled by your license, please see the License tab of the Monitoring
+            Dashboard (by default, available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can be called at any time. If called while connected, it will be
+            applied when the next session creation request is issued. This setting can also be specified in the <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/> constructor.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "serverAddress" on any ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.User">
+            <value>
+            Property <c>User</c> represents the username to be used for the authentication on Lightstreamer Server when 
+            initiating the session. The Metadata Adapter is responsible for checking the credentials (username and password).
+            The User can be null if no user name has been configured. If no username is supplied, no user information will
+            be sent at session initiation. The Metadata Adapter, however, may still allow the session.<br/>
+            <br/>
+            <b>Lifecycle:</b> The username should be set on the <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionDetails" /> object before
+            calling the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at 
+            any time: the supplied value will be used for the next time a new session is requested to the server.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)" /> with argument "user" on any ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.ServerInstanceAddress">
+            <value>
+            Read-only property <c>ServerInstanceAddress</c> represents the server address to be used to issue all requests related to the current session.
+            In fact, when a Server cluster is in place, the Server address specified through <seealso cref="P:com.lightstreamer.client.ConnectionDetails.ServerAddress"/> can 
+            identify various Server instances; in order to ensure that all requests related to a session are issued to 
+            the same Server instance, the Server can answer to the session opening request by providing an address which 
+            uniquely identifies its own instance. When this is the case, this address is returned by the method; otherwise,
+            null is returned. <br/> 
+            Note that the addresses will always have the http: or https: scheme. In case WebSockets are used, the specified 
+            scheme is internally converted to match the related WebSocket protocol (i.e. http becomes ws while 
+            https becomes wss).<br/>
+            <br/>
+            <b>Edition Note:</b> Server Clustering is an optional feature, available depending on Edition and License Type.
+            To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
+            available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> If a session is not currently active, null is returned; soon after a session is established, the value may become available.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "serverInstanceAddress" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.ServerSocketName">
+            <value>
+            Read-only property <c>ServerSocketName</c> represents the instance name of the Server which is serving the current session. To be more precise, 
+            each answering port configured on a Server instance (through a &lt;http_server&gt; or &lt;https_server&gt; element in the 
+            Server configuration file) can be given a different name; the name related to the port to which the session 
+            opening request has been issued is returned. <br/> 
+            Note that each rebind to the same session can, potentially, reach the Server on a port different than the one
+            used for the previous request, depending on the behavior of intermediate nodes. However, the only meaningful case
+            is when a Server cluster is in place and it is configured in such a way that the port used for all bind_session requests
+            differs from the port used for the initial create_session request.<br/>
+            <br/>
+            <b>Edition Note:</b> Server Clustering is an optional feature, available depending on Edition and License Type.
+            To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default, available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> If a session is not currently active, null is returned;
+            soon after a session is established, the value will become available.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "serverSocketName" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.ClientIp">
+            <value>
+            Read-only property <c>ClientIp</c> represents the IP address of this client as seen by the Server which is serving
+            the current session as the client remote address (note that it may not correspond to the client host;
+            for instance it may refer to an intermediate proxy). If, upon a new session, this address changes,
+            it may be a hint that the intermediary network nodes handling the connection have changed, hence the network
+            capabilities may be different. The library uses this information to optimize the connection. <br/>  
+            Note that in case of polling or in case rebind requests are needed, subsequent requests related to the same 
+            session may, in principle, expose a different IP address to the Server; these changes would not be reported.<br/>
+            <br/>
+            <b>Lifecycle:</b> If a session is not currently active, null is returned;
+            soon after a session is established, the value may become available.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "clientIp" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.SessionId">
+            <value>
+            Read-only property <c>SessionId</c> represents the ID associated by the server to this client session.<br/>
+            <br/>
+            <b>Lifecycle:</b> If a session is not currently active, null is returned; soon after a session is established, the value will become available.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "sessionId" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionDetails.Password">
+            <value>
+            Write-only property <c>Password</c> represents the password to be used for the authentication on Lightstreamer Server when initiating 
+            the session. The Metadata Adapter is responsible for checking the credentials (username and password).
+            If no password is supplied, no password information will be sent at session initiation. 
+            The Metadata Adapter, however, may still allow the session.<br/>
+            <br/>
+            <b>Lifecycle:</b> The password should be set on the <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionDetails"/> object before calling 
+            the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at any time: the supplied 
+            value will be used for the next time a new session is requested to the server. <br/>
+            NOTE: The password string will be stored in the current instance. That is necessary in order to allow 
+            automatic reconnection/reauthentication for fail-over. For maximum security, avoid using an actual private 
+            password to authenticate on Lightstreamer Server; rather use a session-id originated by your web/application 
+            server, that can be checked by your Metadata Adapter.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "password" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+            <seealso cref="P:com.lightstreamer.client.ConnectionDetails.User" />
+        </member>
+        <member name="T:com.lightstreamer.client.ConnectionOptions">
+            <summary>
+            Used by LightstreamerClient to provide an extra connection properties data object.
+            
+            Data object that contains the policy settings used to connect to a 
+            Lightstreamer Server. <br/>
+            An instance of this class is attached to every <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/>
+            as <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionOptions"/><br/>
+            </summary>
+            <seealso cref="T:com.lightstreamer.client.LightstreamerClient" />
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.ContentLength">
+            <value>
+            Property <c>ContentLength</c> represents the length expressed in bytes to be used
+            by the Server  for the response body on a stream connection (a minimum length, however,
+            is ensured by the server). After the content length exhaustion, the connection will be
+            closed and a new bind connection will be automatically reopened.<br/>
+            NOTE that this setting only applies to the "HTTP-STREAMING" case (i.e.not to WebSockets).<br/>
+            <br/>
+            <b>Lifecycle:</b> The content length should be set before calling the
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at any
+            time: the supplied value will be used for the next streaming
+            connection (either a bind or a brand new session).<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "contentLength" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> A length decided by the library, to ensure the best performance.
+            It can be of a few MB or much higher, depending on the environment.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.FirstRetryMaxDelay">
+            <value>
+            Property <c>FirstRetryMaxDelay</c> represents the maximum time (in milliseconds) to wait
+            before trying a new connection to the Server in case the previous one is unexpectedly closed
+            while correctly working.<br/>
+            The new connection may be either the opening of a new session or an attempt to recovery the
+            current session, depending on the kind of interruption.
+            The actual delay is a randomized value between 0 and this value. This randomization might
+            help avoid a load spike on the cluster due to simultaneous reconnections, should one of
+            the active servers be stopped. Note that this delay is only applied before the first
+            reconnection: should such reconnection fail, only the setting of <seealso cref="P:com.lightstreamer.client.ConnectionOptions.RetryDelay" />
+            will be applied.<br/>
+            <br/>
+            <b>Lifecycle:</b> This value can be set and changed at any time.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "firstRetryMaxDelay" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 100 (0.1 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.ForcedTransport">
+            <value>
+            Property <c>ForcedTransport</c> can be used to disable/enable the Stream-Sense algorithm
+            and to force the client to use a fixed transport or a fixed combination of a transport and
+            a connection type. When a combination is specified the Stream-Sense algorithm is completely
+            disabled.<br/>
+            The method can be used to switch between streaming and polling connection types and
+            between HTTP and WebSocket transports.<br/>
+            In some cases, the requested status may not be reached, because of connection or environment
+            problems. In that case the client will continuously attempt to reach the configured status.<br/>
+            Note that if the Stream-Sense algorithm is disabled, the client may still enter the
+            "CONNECTED:STREAM-SENSING" status; however, in that case, if it eventually finds out that
+            streaming is not possible, no recovery will be tried.<br/>
+            <br/>
+            Can be one of the following:
+            <ul>
+            <li>null: the Stream-Sense algorithm is enabled and the client will automatically connect
+            using the most appropriate transport and connection type among those made possible by the
+            environment.</li>
+            <li>"WS": the Stream-Sense algorithm is enabled as in the null case but the client will
+            only use WebSocket based connections. If a connection over WebSocket is not possible because
+            of the environment the client will not connect at all.</li>
+            <li>"HTTP": the Stream-Sense algorithm is enabled as in the null case but the client will only
+            use HTTP based connections. If a connection over HTTP is not possible because of the
+            environment the client will not connect at all.</li>
+            <li>"WS-STREAMING": the Stream-Sense algorithm is disabled and the client will only connect on
+            Streaming over WebSocket. If Streaming over WebSocket is not possible because of the
+            environment the client will not connect at all.</li>
+            <li>"HTTP-STREAMING": the Stream-Sense algorithm is disabled and the client will only connect
+            on Streaming over HTTP. If Streaming over HTTP is not possible because of the environment
+            the client will not connect at all.</li>
+            <li>"WS-POLLING": the Stream-Sense algorithm is disabled and the client will only connect on
+            Polling over WebSocket. If Polling over WebSocket is not possible because of the environment
+            the client will not connect at all.</li>
+            <li>"HTTP-POLLING": the Stream-Sense algorithm is disabled and the client will only connect
+            on Polling over HTTP. If Polling over HTTP is not possible because of the environment the
+            client will not connect at all.</li>
+            </ul><br/>
+            <br/>
+            <b>Lifecycle:</b> This method can be called at any time. If called while the client is connecting
+            or connected it will instruct to switch connection type to match the given configuration.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "forcedTransport" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> null (full Stream-Sense enabled).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.HttpExtraHeaders">
+            <value>
+            Property <c>HttpExtraHeaders</c> represents a Map object containing header-name
+            header-value pairs. Null can be specified to avoid extra headers to be sent.
+            That enables/disables the setting of extra HTTP headers
+            to all the request performed to the Lightstreamer server by the client.<br/>
+            Note that the Content-Type header is reserved by the client library itself, while other
+            headers might be refused by the environment and others might cause the connection to the
+            server to fail.<br/>
+            For instance, you cannot use this method to specify custom cookies to be sent to Lightstreamer
+            Server; leverage <seealso cref="M:com.lightstreamer.client.LightstreamerClient.addCookies(System.Uri,System.Net.CookieCollection)" /> instead. The use of custom
+            headers might also cause the client to send an OPTIONS request to the server before opening
+            the actual connection.<br/>
+            <br/>
+            <b>Lifecycle:</b> This setting should be performed before calling the 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed
+            at any time: the supplied value will be used for the next HTTP request or WebSocket
+            establishment.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "httpExtraHeaders" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> null (meaning no extra headers are sent).
+            </value>
+            <seealso cref="P:com.lightstreamer.client.ConnectionOptions.HttpExtraHeadersOnSessionCreationOnly" />
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.IdleTimeout">
+            <value>
+            Property <c>IdleTimeout</c> represents the maximum time (in milliseconds) the Server is
+            allowed to wait for any data to be sent in response to a polling request, if none has
+            accumulated at request time. The wait time used by the Server, however, may be different,
+            because of server side restrictions.
+            Setting this time to a nonzero value and the polling interval to zero leads to an
+            "asynchronous polling" behavior, which, on low data rates, is very similar to the streaming
+            case. Setting this time to zero and the polling interval to a nonzero value, on the other
+            hand, leads to a classical "synchronous polling".<br/>
+            Note that the Server may, in some cases, delay the answer for more than the supplied time,
+            to protect itself against a high polling rate or because of bandwidth restrictions. Also,
+            the Server may impose an upper limit on the wait time, in order to be able to check for
+            client-side connection drops.<br/>
+            <br/>
+            <b>Lifecycle:</b> The idle timeout should be set before calling the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/>
+            method. However, the value can be changed at any time: the supplied value will be used for
+            the next polling request.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "idleTimeout" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 19000 (19 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.KeepaliveInterval">
+            <value>
+            Property <c>KeepaliveInterval</c> represents the interval (in milliseconds) between two
+            keepalive packets sent by Lightstreamer Server on a stream connection when no actual data
+            is being transmitted. If the returned value is 0, it means that the interval is to be
+            decided by the Server upon the next connection.<br/>
+            <br/>
+            <b>Lifecycle:</b> The idle timeout should be set before calling the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/>
+            method. However, the value can be changed at any time: the supplied value will be used for
+            the next streaming connection (either a bind or a brand new session). Note that, after a
+            connection, the value may be changed to the one imposed by the Server.<br/> 
+            If the value has just been set and a connection to Lightstreamer Server
+            has not been established yet, the returned value is the time that is being requested to the
+            Server. Afterwards, the returned value is the time used by the Server, that may be different,
+            because of Server side constraints.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "keepaliveInterval" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 0 (meaning that the Server will send keepalive packets based on its own configuration).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.RequestedMaxBandwidth">
+            <value>
+            Property <c>RequestedMaxBandwidth</c> represents the maximum bandwidth requested for the streaming
+            or polling connection expressed in kbps (kilobits/sec). The string "unlimited" is also
+            allowed, to mean that the maximum bandwidth can be entirely decided on the Server side
+            (the check is case insensitive).<br/>
+            A limit on bandwidth may already be posed by the Metadata Adapter, but the client can furtherly
+            restrict this limit. The limit applies to the bytes received in each streaming or polling
+            connection.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionOptions.RealMaxBandwidth"/><br/>
+            <br/>
+            <b>Edition Note:</b> Bandwidth Control is an optional feature, available depending on Edition and License
+            Type. To know what features are enabled by your license, please see the License tab of the Monitoring
+            Dashboard(by default, available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> The bandwidth limit can be set and changed at any time. If a connection
+            is currently active, the bandwidth limit for the connection is changed on the fly.
+            Remember that the Server may apply a different limit.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "requestedMaxBandwidth" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            Moreover, upon any change or attempt to change the limit, the Server will notify the
+            client and such notification will be received through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "realMaxBandwidth" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> "unlimited"
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.RealMaxBandwidth">
+            <value>
+            Read-only property <c>RealMaxBandwidth</c> represents the maximum bandwidth that can be
+            consumed for the data coming from Lightstreamer Server. This is the actual maximum bandwidth,
+            in contrast with the requested maximum bandwidth, returned by <seealso cref="P:com.lightstreamer.client.ConnectionOptions.RequestedMaxBandwidth"/>.
+            The value may differ from the requested one because of restrictions operated on the server
+            side, or because bandwidth management is not supported(in this case it is always "unlimited"),
+            but also because of number rounding.<br/>
+            The return value is a decimal number, which represents the maximum bandwidth applied by
+            the Server for the streaming or polling connection expressed in kbps (kilobits/sec), or
+            the string "unlimited", or null.<br/>
+            <br/>
+            <b>Lifecycle:</b> If a connection to Lightstreamer Server is not currently active, null is returned; soon after the connection is established, the value will become available.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to 
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "realMaxBandwidth" on any 
+            ClientListener listening to the related LightstreamerClient.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.PollingInterval">
+            <value>
+            Property <c>PollingInterval</c> represents the polling interval (in milliseconds) used for
+            polling connections. The client switches from the default streaming mode to polling mode
+            when the client network infrastructure does not allow streaming. Also, polling mode can be
+            forced by set <seealso cref="P:com.lightstreamer.client.ConnectionOptions.ForcedTransport"/> to "WS-POLLING" or "HTTP-POLLING" as
+            parameter.<br/>
+            The polling interval affects the rate at which polling requests are issued. It is the time
+            between the start of a polling request and the start of the next request. However, if the
+            polling interval expires before the first polling request has returned, then the second
+            polling request is delayed. This may happen, for instance, when the Server delays the
+            answer because of the idle timeout setting. In any case, the polling interval allows for
+            setting an upper limit on the polling frequency.<br/>
+            The Server does not impose a lower limit on the client polling interval. However, in some
+            cases, it may protect itself against a high polling rate by delaying its answer. Network
+            limitations and configured bandwidth limits may also lower the polling rate, despite of
+            the client polling interval.<br/>
+            The Server may, however, impose an upper limit on the polling interval, in order to be able
+            to promptly detect terminated polling request sequences and discard related session
+            information.<br/>
+            Zero is a legal value too, meaning that the client will issue a new polling request as soon
+            as a previous one has returned.<br/>
+            <br/>
+            <b>Lifecycle:</b> The polling interval should be set before calling the
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at any
+            time: the supplied value will be used for the next polling request.
+            Note that, after each polling request, the value may be changed to the one imposed by
+            the Server.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "pollingInterval" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 0 (pure "asynchronous polling" is configured).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.ReconnectTimeout">
+            <value>
+            Property <c>ReconnectTimeout</c> represents the time (in milliseconds) the client, after
+            entering "STALLED" status, is allowed to keep waiting for a keepalive packet or any data
+            on a stream connection, before disconnecting and trying to reconnect to the Server.
+            The new connection may be either the opening of a new session or an attempt to recovery
+            the current session, depending on the kind of interruption.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionOptions.StalledTimeout"/>, <seealso cref="P:com.lightstreamer.client.ConnectionOptions.KeepaliveInterval"/>.<br/>
+            <br/>
+            <b>Lifecycle:</b> This value can be set and changed at any time.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "reconnectTimeout" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 3000 (3 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.RetryDelay">
+            <value>
+            Property <c>RetryDelay</c> represents the time (in milliseconds) to wait before trying
+            a new connection, and specifically determines:
+            <ul>
+            <li>the minimum time to wait before trying a new connection to the Server in case the previous one failed for any reason; and</li>
+            <li>the maximum time to wait for a response to a request before dropping the connection and trying with a different approach.</li>
+            </ul><br/>
+            Enforcing a delay between reconnections prevents strict loops of connection attempts when
+            these attempts always fail immediately because of some persisting issue. This applies both
+            to reconnections aimed at opening a new session and to reconnections aimed at attempting a
+            recovery of the current session.<br/>
+            Note that the delay is calculated from the moment the effort to create a connection is made,
+            not from the moment the failure is detected. As a consequence, when a working connection is
+            interrupted, this timeout is usually already consumed and the new attempt can be immediate
+            (except that <seealso cref="P:com.lightstreamer.client.ConnectionOptions.FirstRetryMaxDelay"/> will apply in this case). As another
+            consequence, when a connection attempt gets no answer and times out, the new attempt will
+            be immediate.<br/>
+            <br/>
+            As a timeout on unresponsive connections, it is applied in these cases:
+            <ul>
+            <li>Streaming: Applied on any attempt to setup the streaming connection. If after the timeout no
+            data has arrived on the stream connection, the client may automatically switch transport
+            or may resort to a polling connection.</li>
+            <li>Polling and pre-flight requests: Applied on every connection. If after the timeout no
+            data has arrived on the polling connection, the entire connection process restarts from
+            scratch.</li>
+            </ul><br/>
+            <b>This setting imposes only a minimum delay. In order to avoid network congestion, the
+            library may use a longer delay if the issue preventing the establishment of a session
+            persists.</b><br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionOptions.FirstRetryMaxDelay"/>.<br/>
+            <br/>
+            <b>Lifecycle:</b> This value can be set and changed at any time.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "retryDelay" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 4000 (4 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.ReverseHeartbeatInterval">
+            <value>
+            Property <c>ReverseHeartbeatInterval</c> represents the interval, expressed in milliseconds, between subsequent reverse-heartbeats, or 0.
+            Enables/disables the reverse-heartbeat mechanism by setting the heartbeat interval. If the
+            given value (expressed in milliseconds) equals 0 then the reverse-heartbeat mechanism will
+            be disabled; otherwise if the given value is greater than 0 the mechanism will be enabled
+            with the specified interval.<br/>
+            When the mechanism is active, the client will ensure that there is at most the specified
+            interval between a control request and the following one, by sending empty control requests 
+            (the "reverse heartbeats") if necessary.<br/>
+            This can serve various purposes:
+            <ul>
+            <li>Preventing the communication infrastructure from closing an inactive socket that is
+            ready for reuse for more HTTP control requests, to avoid connection reestablishment
+            overhead. However it is not guaranteed that the connection will be kept open, as the
+            underlying TCP implementation may open a new socket each time a HTTP request needs to be
+            sent.<br/>
+            Note that this will be done only when a session is in place.</li>
+            <li>Allowing the Server to detect when a streaming connection or Websocket is interrupted but not closed. In these cases, the client eventually closes the connection, but the Server cannot see that (the connection remains "half-open") and just keeps trying to write.This is done by notifying the timeout to the Server upon each streaming request. For long polling, the setIdleTimeout(long) setting has a similar function.</li>
+            <li>Allowing the Server to detect cases in which the client has closed a connection in HTTP streaming, but the socket is kept open by some intermediate node, which keeps consuming the response.This is also done by notifying the timeout to the Server upon each streaming request, whereas, for long polling, the setIdleTimeout(long) setting has a similar function.</li>
+            </ul><br/>
+            <br/>
+            <b>Lifecycle:</b> This setting should be performed before calling the
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at
+            any time: the setting will be obeyed immediately, unless a higher heartbeat frequency was
+            notified to the Server for the current connection. The setting will always be obeyed upon
+            the next connection (either a bind or a brand new session).<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "reverseHeartbeatInterval" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 0 (meaning that the mechanism is disabled).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.StalledTimeout">
+            <value>
+            Property <c>StalledTimeout</c> represents the extra time (in milliseconds) the client is
+            allowed to wait when an expected keepalive packet has not been received on a stream
+            connection (and no actual data has arrived), before entering the "STALLED" status.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionOptions.ReconnectTimeout"/>, <seealso cref="P:com.lightstreamer.client.ConnectionOptions.KeepaliveInterval"/>.<br/>
+            <br/>
+            <b>Lifecycle:</b> This value can be set and changed at any time.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "stalledTimeout" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 2000 (2 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.SessionRecoveryTimeout">
+            <value>
+            Property <c>SessionRecoveryTimeout</c> represents the maximum time allowed for attempts to
+            recover the current session upon an interruption, after which a new session will be created.
+            If the given value (expressed in milliseconds) equals 0, then any attempt to recover the
+            current session will be prevented in the first place.<br/>
+            In fact, in an attempt to recover the current session, the client will periodically try to
+            access the Server at the address related with the current session. In some cases, this
+            timeout, by enforcing a fresh connection attempt, may prevent an infinite sequence of
+            unsuccessful attempts to access the Server.<br/>
+            Note that, when the Server is reached, the recovery may fail due to a Server side timeout
+            on the retention of the session and the updates sent. In that case, a new session will be
+            created anyway. A setting smaller than the Server timeouts may prevent such useless failures,
+            but, if too small, it may also prevent successful recovery in some cases.<br/>
+            <br/>
+            <b>Lifecycle:</b> This value can be set and changed at any time.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "sessionRecoveryTimeout" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> 15000 (15 seconds).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.HttpExtraHeadersOnSessionCreationOnly">
+            <value>
+            Property <c>HttpExtraHeadersOnSessionCreationOnly</c> enables/disables a restriction on
+            the forwarding of the extra http headers specified through <seealso cref="P:com.lightstreamer.client.ConnectionOptions.HttpExtraHeaders"/>.
+            If true, said headers will only be sent during the session creation process (and thus will
+            still be available to the metadata adapter notifyUser method) but will not be sent on
+            following requests. On the contrary, when set to true, the specified extra headers will
+            be sent to the server on every request.<br/>
+            Values can be true/false to enable/disable the restriction on extra headers forwarding.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionOptions.HttpExtraHeaders"/>.<br/>
+            <br/>
+            <b>Lifecycle:</b> This setting should be performed before calling the 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at
+            any time: the supplied value will be used for the next HTTP request or WebSocket establishment.<br/>
+            <br/>
+            <b>Related notifications:</b>A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "httpExtraHeadersOnSessionCreationOnly"
+            on any ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> false
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.ServerInstanceAddressIgnored">
+            <value>
+            Property <c>ServerInstanceAddressIgnored</c> disable/enable the automatic handling of
+            server instance address that may be returned by the Lightstreamer server during session
+            creation.<br/>
+            In fact, when a Server cluster is in place, the Server address specified through
+            <seealso cref="P:com.lightstreamer.client.ConnectionDetails.ServerAddress"/> can identify various Server instances;
+            in order to ensure that all requests related to a session are issued to the same Server
+            instance, the Server can answer to the session opening request by providing an address
+            which uniquely identifies its own instance.<br/>
+            Setting this value to true permits to ignore that address and to always connect through
+            the address supplied in setServerAddress. This may be needed in a test environment, if the
+            Server address specified is actually a local address to a specific Server instance in the
+            cluster.<br/>
+            Values can be true or false, to ignore or not the server instance address sent by the server.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.ConnectionDetails.ServerAddress"/>.<br/>
+            <br/>
+            <b>Edition Note:</b> Server Clustering is an optional feature, available depending on Edition and License
+            Type. To know what features are enabled by your license, please see the License tab of the Monitoring
+            Dashboard(by default, available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can be called at any time. If called while connected, it will be applied
+            when the next session creation request is issued.<br/>
+            <br/>
+            <b>Related notifications:</b>A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "serverInstanceAddressIgnored" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> false
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.SlowingEnabled">
+            <value>
+            Property <c>SlowingEnabled</c> turns on or off the slowing algorithm. This heuristic
+            algorithm tries to detect when the client CPU is not able to keep the pace of the events
+            sent by the Server on a streaming connection. In that case, an automatic transition to
+            polling is performed.<br/>
+            In polling, the client handles all the data before issuing the next poll, hence a slow
+            client would just delay the polls, while the Server accumulates and merges the events and
+            ensures that no obsolete data is sent.<br/>
+            Only in very slow clients, the next polling request may be so much delayed that the Server
+            disposes the session first, because of its protection timeouts. In this case, a request for
+            a fresh session will be reissued by the client and this may happen in cycle.<br/>
+            Values can be true or false, to enable or disable the heuristic algorithm that lowers the
+            item update frequency.<br/>
+            <br/>
+            <b>Lifecycle:</b> This setting should be performed before calling the 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However, the value can be changed at
+            any time: the supplied value will be used for the next streaming connection (either a
+            bind or a brand new session).<br/>
+            <br/>
+            <b>Related notifications:</b>A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "slowingEnabled"
+            on any ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b> false
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.ConnectionOptions.Proxy">
+            <value>
+            Setter method that configures the coordinates to a proxy server to be used to connect
+            to the Lightstreamer Server.<br/>
+            <br/>
+            <b>Lifecycle:</b> May be called only once before creating any LightstreamerClient instance.<br/>
+            <br/>
+            <b>Related notifications:</b> A change to this setting will be notified through a call to
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onPropertyChange(System.String)"/> with argument "proxy" on any
+            ClientListener listening to the related LightstreamerClient.<br/>
+            <br/>
+            <b>Default value:</b>  null (meaning not to pass through a proxy).
+             </value>
+        </member>
+        <member name="T:com.lightstreamer.client.LightstreamerClient">
+            <summary>
+            Facade class for the management of the communication to
+            Lightstreamer Server. Used to provide configuration settings, event
+            handlers, operations for the control of the connection lifecycle,
+            <seealso cref="T:com.lightstreamer.client.Subscription"/> handling and to send messages. <br/>
+            An instance of LightstreamerClient handles the communication with
+            Lightstreamer Server on a specified endpoint. Hence, it hosts one "Session";
+            or, more precisely, a sequence of Sessions, since any Session may fail
+            and be recovered, or it can be interrupted on purpose.
+            So, normally, a single instance of LightstreamerClient is needed. <br/>
+            However, multiple instances of LightstreamerClient can be used,
+            toward the same or multiple endpoints.
+            <p/>
+            You can listen to the events generated by a session by registering an event listener, such as <see cref="T:com.lightstreamer.client.ClientListener"/> or <see cref="T:com.lightstreamer.client.SubscriptionListener"/>. 
+            These listeners allow you to handle various events, such as session creation, connection status, subscription updates, and server messages. 
+            However, you should be aware that the event notifications are dispatched by a single thread, the so-called event thread. 
+            This means that if the operations of a listener are slow or blocking, they will delay the processing of the other listeners and 
+            affect the performance of your application. 
+            Therefore, you should delegate any slow or blocking operations to a dedicated thread, and keep the listener methods as fast and simple as possible.
+            Note that even if you create multiple instances of LightstreamerClient, they will all use a single event thread, that is shared among them.
+            </summary>
+        </member>
+        <member name="F:com.lightstreamer.client.LightstreamerClient.LIB_NAME">
+            <summary>
+            A constant string representing the name of the library.
+            </summary>
+        </member>
+        <member name="F:com.lightstreamer.client.LightstreamerClient.LIB_VERSION">
+            <summary>
+            A constant string representing the version of the library.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.setLoggerProvider(com.lightstreamer.log.ILoggerProvider)">
+            <summary>
+            Static method that permits to configure the logging system used by the library. The logging system 
+            must respect the 
+            <seealso cref="T:com.lightstreamer.log.ILoggerProvider"/> 
+            interface. A custom class can be used to wrap any third-party 
+            .NET logging tools. <br/>
+            If no logging system is specified, all the generated log is discarded. <br/>
+            The following categories are available to be consumed:
+            <ul>
+             <li>lightstreamer.stream:<br/>
+             logs socket activity on Lightstreamer Server connections;<br/>
+             at INFO level, socket operations are logged;<br/>
+             at DEBUG level, read/write data exchange is logged.
+             </li>
+             <li>lightstreamer.protocol:<br/>
+             logs requests to Lightstreamer Server and Server answers;<br/>
+             at INFO level, requests are logged;<br/>
+             at DEBUG level, request details and events from the Server are logged.
+             </li>
+             <li>lightstreamer.session:<br/>
+             logs Server Session lifecycle events;<br/>
+             at INFO level, lifecycle events are logged;<br/>
+             at DEBUG level, lifecycle event details are logged.
+             </li>
+             <li>lightstreamer.subscriptions:<br/>
+             logs subscription requests received by the clients and the related updates;<br/>
+             at WARN level, alert events from the Server are logged;<br/>
+             at INFO level, subscriptions and unsubscriptions are logged;<br/>
+             at DEBUG level, requests batching and update details are logged.
+             </li>
+             <li>lightstreamer.actions:<br/>
+             logs settings / API calls.
+             </li>
+            </ul>
+            </summary>
+            <param name="provider"> A <seealso cref="T:com.lightstreamer.log.ILoggerProvider"/>
+            instance that will be used to generate log messages by the library classes. </param>
+        </member>
+        <member name="F:com.lightstreamer.client.LightstreamerClient.connectionOptions">
+            <summary>
+            Data object that contains options and policies for the connection to 
+            the server. This instance is set up by the LightstreamerClient object at 
+            its own creation. <br/>
+            Properties of this object can be overwritten by values received from a 
+            Lightstreamer Server. 
+            </summary>
+        </member>
+        <member name="F:com.lightstreamer.client.LightstreamerClient.connectionDetails">
+            <summary>
+            Data object that contains the details needed to open a connection to 
+            a Lightstreamer Server. This instance is set up by the LightstreamerClient object at 
+            its own creation. <br/>
+            Properties of this object can be overwritten by values received from a 
+            Lightstreamer Server. 
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.#ctor(System.String,System.String)">
+            <summary>
+            Creates an object to be configured to connect to a Lightstreamer server
+            and to handle all the communications with it.
+            Each LightstreamerClient is the entry point to connect to a Lightstreamer server, 
+            subscribe to as many items as needed and to send messages. 
+            </summary>
+            <param name="serverAddress"> the address of the Lightstreamer Server to
+            which this LightstreamerClient will connect to. It is possible to specify it later
+            by using null here. See <seealso cref="P:com.lightstreamer.client.ConnectionDetails.ServerAddress"/> 
+            for details. </param>
+            <param name="adapterSet"> the name of the Adapter Set mounted on Lightstreamer Server 
+            to be used to handle all requests in the Session associated with this 
+            LightstreamerClient. It is possible not to specify it at all or to specify 
+            it later by using null here. See <seealso cref="P:com.lightstreamer.client.ConnectionDetails.AdapterSet"/> 
+            for details.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.addListener(com.lightstreamer.client.ClientListener)">
+            <summary>
+            Adds a listener that will receive events from the LightstreamerClient instance. 
+            The same listener can be added to several different LightstreamerClient instances.<br/>
+            
+            <b>Lifecycle:</b>  A listener can be added at any time. A call to add a listener already 
+            present will be ignored.
+            </summary>
+            <param name="listener"> An object that will receive the events as documented in the 
+            ClientListener interface.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.removeListener(com.lightstreamer.client.ClientListener)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.removeListener(com.lightstreamer.client.ClientListener)">
+            <summary>
+            Removes a listener from the LightstreamerClient instance so that it will not receive events anymore.
+            
+            <b>Lifecycle:</b>  a listener can be removed at any time.
+            </summary>
+            <param name="listener"> The listener to be removed.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.addListener(com.lightstreamer.client.ClientListener)" />
+        </member>
+        <member name="P:com.lightstreamer.client.LightstreamerClient.Listeners">
+            <summary>
+            Returns a list containing the <seealso cref="T:com.lightstreamer.client.ClientListener"/> instances that were added to this client.
+            </summary>
+            <returns> a list containing the listeners that were added to this client. </returns>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.addListener(com.lightstreamer.client.ClientListener)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.connect">
+            <summary>
+            Operation method that requests to open a Session against the configured Lightstreamer Server. <br/>
+            When connect() is called, unless a single transport was forced through 
+            <seealso cref="P:com.lightstreamer.client.ConnectionOptions.ForcedTransport" />, the so called "Stream-Sense" mechanism is started: 
+            if the client does not receive any answer for some seconds from the streaming connection, then it 
+            will automatically open a polling connection. <br/>
+            A polling connection may also be opened if the environment is not suitable for a streaming connection. <br/>
+            Note that as "polling connection" we mean a loop of polling requests, each of which requires opening a 
+            synchronous (i.e. not streaming) connection to Lightstreamer Server.
+            
+            <b>Lifecycle:</b>  Note that the request to connect is accomplished by the client appending the request to
+            the internal scheduler queue; this means that an invocation to <seealso cref="P:com.lightstreamer.client.LightstreamerClient.Status"/> right after
+            connect() might not reflect the change yet. <br/> 
+            When the request to connect is finally being executed, if the current status of the client is 
+            CONNECTING, CONNECTED:* or STALLED, then nothing will be done.
+            </summary>
+            <seealso cref="P:com.lightstreamer.client.LightstreamerClient.Status" />
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.disconnect" />
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onStatusChange(System.String)" />
+            <seealso cref="P:com.lightstreamer.client.ConnectionDetails.ServerAddress" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.disconnect">
+            <summary>
+            Operation method that requests to close the Session opened against the configured Lightstreamer Server 
+            (if any). <br/>
+            When disconnect() is called, the "Stream-Sense" mechanism is stopped. <br/>
+            Note that active Subscription instances, associated with this LightstreamerClient instance, are preserved 
+            to be re-subscribed to on future Sessions.
+            
+            @lifecycle  Note that the request to disconnect is accomplished by the client in a separate thread; this 
+            means that an invocation to <seealso cref="P:com.lightstreamer.client.LightstreamerClient.Status"/> right after disconnect() might not reflect the change yet. <br/> 
+            When the request to disconnect is finally being executed, if the status of the client is "DISCONNECTED", 
+            then nothing will be done.
+            </summary>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.DisconnectFuture">
+            <summary>
+            Works just like <seealso cref="M:com.lightstreamer.client.LightstreamerClient.disconnect"/>, but also returns 
+            a  <seealso cref="T:System.Threading.Tasks.Task"/> which will be completed
+            when all involved threads started by all <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/>
+            instances have been terminated, because no more activities
+            need to be managed and hence event dispatching is no longer necessary.
+            Such a method is especially useful in those environments which require appropriate
+            resource management. The method should be used in replacement
+            of <seealso cref="M:com.lightstreamer.client.LightstreamerClient.disconnect"/> in all those circumstances 
+            where it is indispensable to guarantee a complete shutdown of all user tasks, 
+            in order to avoid potential memory leaks and waste resources.
+            </summary>
+            <returns> A Task that will be completed when all the activities launched by
+            all  <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/> instances are terminated.
+            </returns>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.disconnect" />
+        </member>
+        <member name="P:com.lightstreamer.client.LightstreamerClient.Status">
+            <summary>
+            Inquiry method that gets the current client status and transport (when applicable).
+            </summary>
+            <returns> The current client status. It can be one of the following values:
+            <ul>
+             <li>"CONNECTING" the client is waiting for a Server's response in order to establish a connection;</li>
+             <li>"CONNECTED:STREAM-SENSING" the client has received a preliminary response from the server and 
+             is currently verifying if a streaming connection is possible;</li>
+             <li>"CONNECTED:WS-STREAMING" a streaming connection over WebSocket is active;</li>
+             <li>"CONNECTED:HTTP-STREAMING" a streaming connection over HTTP is active;</li>
+             <li>"CONNECTED:WS-POLLING" a polling connection over WebSocket is in progress;</li>
+             <li>"CONNECTED:HTTP-POLLING" a polling connection over HTTP is in progress;</li>
+             <li>"STALLED" the Server has not been sending data on an active streaming connection for longer 
+             than a configured time;</li>
+             <li>"DISCONNECTED:WILL-RETRY" no connection is currently active but one will be opened after a timeout;</li>
+             <li>"DISCONNECTED:TRYING-RECOVERY" no connection is currently active,
+             but one will be opened as soon as possible, as an attempt to recover
+             the current session after a connection issue;</li> 
+             <li>"DISCONNECTED" no connection is currently active.</li>
+            </ul>
+            </returns>
+            <seealso cref="M:com.lightstreamer.client.ClientListener.onStatusChange(System.String)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)">
+            <summary>
+            Operation method that adds a Subscription to the list of "active" Subscriptions. The Subscription cannot already 
+            be in the "active" state. <br/>
+            Active subscriptions are subscribed to through the server as soon as possible (i.e. as soon as there is a 
+            session available). Active Subscription are automatically persisted across different sessions as long as a 
+            related unsubscribe call is not issued.
+            
+            <b>Lifecycle:</b>  Subscriptions can be given to the LightstreamerClient at any time. Once done the Subscription 
+            immediately enters the "active" state. <br/>
+            Once "active", a Subscription instance cannot be provided again to a LightstreamerClient unless it is 
+            first removed from the "active" state through a call to <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/>. <br/>
+            Also note that forwarding of the subscription to the server is made appending the request to the internal scheduler. <br/>
+            A successful subscription to the server will be notified through a <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onSubscription"/>
+            event.
+            </summary>
+            <param name="subscription"> A Subscription object, carrying all the information needed to process real-time values.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)">
+            <summary>
+            Operation method that removes a Subscription that is currently in the "active" state. <br/> 
+            By bringing back a Subscription to the "inactive" state, the unsubscription from all its items is 
+            requested to Lightstreamer Server.
+            
+            <b>Lifecycle:</b>  Subscription can be unsubscribed from at any time. Once done the Subscription immediately 
+            exits the "active" state. <br/>
+            Note that forwarding of the unsubscription to the server is made appending the request to the internal scheduler. <br/>
+            The unsubscription will be notified through a <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onUnsubscription" /> event.
+            </summary>
+            <param name="subscription"> An "active" Subscription object that was activated by this LightstreamerClient 
+            instance. </param>
+        </member>
+        <member name="P:com.lightstreamer.client.LightstreamerClient.Subscriptions">
+            <summary>
+            Inquiry method that returns a list containing all the Subscription instances that are 
+            currently "active" on this LightstreamerClient. <br/>
+            Internal second-level Subscription are not included.
+            </summary>
+            <returns> A list, containing all the Subscription currently "active" on this LightstreamerClient. <br/>
+            The list can be empty. </returns>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.sendMessage(System.String)">
+            <summary>
+            A simplified version of the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.sendMessage(System.String,System.String,System.Int32,com.lightstreamer.client.ClientMessageListener,System.Boolean)" />.
+            The internal implementation will call
+            <code>
+              sendMessage(message,null,-1,null,false);
+            </code>
+            Note that this invocation involves no sequence and no listener, hence an optimized
+            fire-and-forget behavior will be applied.
+            </summary>
+            <param name="message"> a text message, whose interpretation is entirely demanded to the Metadata Adapter
+            associated to the current connection. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.sendMessage(System.String,System.String,System.Int32,com.lightstreamer.client.ClientMessageListener,System.Boolean)">
+            <summary>
+            Operation method that sends a message to the Server. The message is interpreted and handled by 
+            the Metadata Adapter associated to the current Session. This operation supports in-order 
+            guaranteed message delivery with automatic batching. In other words, messages are guaranteed 
+            to arrive exactly once and respecting the original order, whatever is the underlying transport 
+            (HTTP or WebSockets). Furthermore, high frequency messages are automatically batched, if necessary,
+            to reduce network round trips. <br/>
+            Upon subsequent calls to the method, the sequential management of the involved messages is guaranteed. 
+            The ordering is determined by the order in which the calls to sendMessage are issued.
+            However, any message that, for any reason, doesn't reach the Server can be discarded by the Server 
+            if this causes the subsequent message to be kept waiting for longer than a configurable timeout. 
+            Note that, because of the asynchronous transport of the requests, if a zero or very low timeout is 
+            set for a message, it is not guaranteed that the previous message can be processed, even if no communication 
+            issues occur. <br/>
+            Sequence identifiers can also be associated with the messages. In this case, the sequential management is 
+            restricted to all subsets of messages with the same sequence identifier associated. <br/>
+            Notifications of the operation outcome can be received by supplying a suitable listener. The supplied 
+            listener is guaranteed to be eventually invoked; listeners associated with a sequence are guaranteed 
+            to be invoked sequentially. <br/>
+            The "UNORDERED_MESSAGES" sequence name has a special meaning. For such a sequence, immediate processing 
+            is guaranteed, while strict ordering and even sequentialization of the processing is not enforced. 
+            Likewise, strict ordering of the notifications is not enforced. However, messages that, for any reason, 
+            should fail to reach the Server whereas subsequent messages had succeeded, might still be discarded after 
+            a server-side timeout. <br/>
+            Moreover, if "UNORDERED_MESSAGES" is used and no listener is supplied, a "fire and forget" scenario
+            is assumed. In this case, no checks on missing, duplicated or overtaken messages are performed at all,
+            so as to optimize the processing and allow the highest possible throughput.
+            
+            <b>Lifecycle:</b>  Since a message is handled by the Metadata Adapter associated to the current connection, a
+            message can be sent only if a connection is currently active. If the special enqueueWhileDisconnected 
+            flag is specified it is possible to call the method at any time and the client will take care of sending
+            the message as soon as a connection is available, otherwise, if the current status is "DISCONNECTED*", 
+            the message will be abandoned and the <seealso cref="M:com.lightstreamer.client.ClientMessageListener.onAbort(System.String,System.Boolean)"/> event will be fired. <br/>
+            Note that, in any case, as soon as the status switches again to "DISCONNECTED*", any message still pending 
+            is aborted, including messages that were queued with the enqueueWhileDisconnected flag set to true. <br/>
+            Also note that forwarding of the message to the server is made appending the request to
+            the internal scheduler queue; hence, if a message 
+            is sent while the connection is active, it could be aborted because of a subsequent disconnection. 
+            In the same way a message sent while the connection is not active might be sent because of a subsequent
+            connection.
+            </summary>
+            <param name="message"> a text message, whose interpretation is entirely demanded to the Metadata Adapter
+            associated to the current connection. </param>
+            <param name="sequence"> an alphanumeric identifier, used to identify a subset of messages to be managed in sequence; 
+            underscore characters are also allowed. If the "UNORDERED_MESSAGES" identifier is supplied, the message will 
+            be processed in the special way described above. The parameter is optional; if set to null, "UNORDERED_MESSAGES" 
+            is used as the sequence name. </param>
+            <param name="delayTimeout"> a timeout, expressed in milliseconds. If higher than the Server default timeout, the 
+            latter will be used instead. <br/> 
+            The parameter is optional; if a negative value is supplied, the Server default timeout will be applied. <br/>
+            This timeout is ignored for the special "UNORDERED_MESSAGES" sequence, for which a custom server-side 
+            timeout applies. </param>
+            <param name="listener"> an object suitable for receiving notifications about the processing outcome. The parameter is 
+            optional; if not supplied, no notification will be available. </param>
+            <param name="enqueueWhileDisconnected"> if this flag is set to true, and the client is in a disconnected status when
+            the provided message is handled, then the message is not aborted right away but is queued waiting for a new
+            session. Note that the message can still be aborted later when a new session is established. </param>
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.addCookies(System.Uri,System.Net.CookieCollection)">
+            <summary>
+            Static method that can be used to share cookies between connections to the Server
+            (performed by this library) and connections to other sites that are performed
+            by the application. With this method, cookies received by the application
+            can be added (or replaced if already present) to the cookie set used by the
+            library to access the Server. Obviously, only cookies whose domain is compatible
+            with the Server domain will be used internally.
+            
+            <b>Lifecycle:</b>  This method should be invoked before calling the
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.connect"/> method. However it can be invoked at any time;
+            it will affect the internal cookie set immediately and the sending of cookies
+            on the next HTTP request or WebSocket establishment.
+            </summary>
+            <param name="uri"> the URI from which the supplied cookies were received. It cannot be null.
+            </param>
+            <param name="cookies"> a collection of cookies.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.getCookies(System.Uri)" />
+        </member>
+        <member name="M:com.lightstreamer.client.LightstreamerClient.getCookies(System.Uri)">
+            <summary>
+            Static inquiry method that can be used to share cookies between connections to the Server
+            (performed by this library) and connections to other sites that are performed
+            by the application. With this method, cookies received from the Server can be
+            extracted for sending through other connections, according with the URI to be accessed.
+            <br/>See <seealso cref="M:com.lightstreamer.client.LightstreamerClient.addCookies(System.Uri,System.Net.CookieCollection)" /> for clarifications on when cookies are directly stored
+            by the library and when not.
+            </summary>
+            <param name="uri"> the URI to which the cookies should be sent, or null.
+            </param>
+            <returns> a collection with the various cookies that can
+            be sent in a HTTP request for the specified URI. If a null URI was supplied,
+            all available non-expired cookies will be returned.</returns>
+        </member>
+        <member name="P:com.lightstreamer.client.LightstreamerClient.TrustManagerFactory">
+            <summary>
+            Provides a mean to control the way TLS certificates are evaluated, with the possibility to accept untrusted ones.
+            
+            <b>Lifecycle:</b> May be called only once before creating any LightstreamerClient instance.
+            </summary>
+        </member>
+        <member name="T:com.lightstreamer.client.Proxy">
+            <summary>
+            Simple class representing a Proxy configuration. <br/>
+            
+            An instance of this class can be used through <seealso cref="P:com.lightstreamer.client.ConnectionOptions.Proxy"/> to
+            instruct a LightstreamerClient to connect to the Lightstreamer Server passing through a proxy.
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            This constructor will call <seealso cref="M:com.lightstreamer.client.Proxy.#ctor(System.String,System.String,System.Int32,System.String,System.String)"/>
+            specifying null user and null password. </summary>
+            <param name="type"> the proxy type. Supported values are HTTP, SOCKS4 and SOCKS5. </param>
+            <param name="host"> the proxy host </param>
+            <param name="port"> the proxy port </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.#ctor(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            This constructor will call <seealso cref="M:com.lightstreamer.client.Proxy.#ctor(System.String,System.String,System.Int32,System.String,System.String)"/>
+            specifying a null password. </summary>
+            <param name="type"> the proxy type. Supported values are HTTP, SOCKS4 and SOCKS5. </param>
+            <param name="host"> the proxy host </param>
+            <param name="port"> the proxy port </param>
+            <param name="user"> the user name to be used to validate against the proxy </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.#ctor(System.String,System.String,System.Int32,System.String,System.String)">
+            <summary>
+            Creates a Proxy instance containing all the informations required by the <seealso cref="T:com.lightstreamer.client.LightstreamerClient"/>
+            to connect to a Lightstreamer server passing through a proxy. <br/>
+            Once created the Proxy instance has to be passed to the <seealso cref="F:com.lightstreamer.client.LightstreamerClient.connectionOptions"/>
+            instance using the <seealso cref="P:com.lightstreamer.client.ConnectionOptions.Proxy"/> method.
+            </summary>
+            <param name="type"> the proxy type. Supported values are HTTP, SOCKS4 and SOCKS5. </param>
+            <param name="host"> the proxy host </param>
+            <param name="port"> the proxy port </param>
+            <param name="user"> the user name to be used to validate against the proxy </param>
+            <param name="password"> the password to be used to validate against the proxy </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:com.lightstreamer.client.Proxy.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="T:com.lightstreamer.client.Subscription">
+            <summary>
+            Class representing a Subscription to be submitted to a Lightstreamer Server. It contains 
+            subscription details and the listeners needed to process the real-time data. <br/>
+            After the creation, a Subscription object is in the "inactive" state. When a Subscription 
+            object is subscribed to on a LightstreamerClient object, through the 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)"/> method, its state becomes "active". 
+            This means that the client activates a subscription to the required items through 
+            Lightstreamer Server and the Subscription object begins to receive real-time events. <br/>
+            A Subscription can be configured to use either an Item Group or an Item List to specify the 
+            items to be subscribed to and using either a Field Schema or Field List to specify the fields. <br/>
+            "Item Group" and "Item List" are defined as follows:
+            <ul>
+             <li>"Item Group": an Item Group is a String identifier representing a list of items. 
+             Such Item Group has to be expanded into a list of items by the getItems method of the 
+             MetadataProvider of the associated Adapter Set. When using an Item Group, items in the 
+             subscription are identified by their 1-based index within the group.<br/>
+             It is possible to configure the Subscription to use an "Item Group" leveraging the 
+             <seealso cref="P:com.lightstreamer.client.Subscription.ItemGroup"/> property.</li> 
+             <li>"Item List": an Item List is an array of Strings each one representing an item. 
+             For the Item List to be correctly interpreted a LiteralBasedProvider or a MetadataProvider 
+             with a compatible implementation of getItems has to be configured in the associated 
+             Adapter Set.<br/>
+             Note that no item in the list can be empty, can contain spaces or can be a number.<br/>
+             When using an Item List, items in the subscription are identified by their name or 
+             by their 1-based index within the list.<br/>
+             It is possible to configure the Subscription to use an "Item List" leveraging the 
+             <seealso cref="P:com.lightstreamer.client.Subscription.Items"/> property or by specifying it in the constructor.</li>
+            </ul>
+            "Field Schema" and "Field List" are defined as follows:
+            <ul>
+             <li>"Field Schema": a Field Schema is a String identifier representing a list of fields. 
+             Such Field Schema has to be expanded into a list of fields by the getFields method of 
+             the MetadataProvider of the associated Adapter Set. When using a Field Schema, fields 
+             in the subscription are identified by their 1-based index within the schema.<br/>
+             It is possible to configure the Subscription to use a "Field Schema" leveraging the 
+             <seealso cref="P:com.lightstreamer.client.Subscription.FieldSchema"/> property.</li>
+             <li>"Field List": a Field List is an array of Strings each one representing a field. 
+             For the Field List to be correctly interpreted a LiteralBasedProvider or a MetadataProvider 
+             with a compatible implementation of getFields has to be configured in the associated 
+             Adapter Set.<br/>
+             Note that no field in the list can be empty or can contain spaces.<br/>
+             When using a Field List, fields in the subscription are identified by their name or 
+             by their 1-based index within the list.<br/>
+             It is possible to configure the Subscription to use a "Field List" leveraging the 
+             <seealso cref="P:com.lightstreamer.client.Subscription.Fields"/> property or by specifying it in the constructor.</li>
+            </ul>
+            </summary>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.#ctor(System.String,System.String[],System.String[])">
+            <summary>
+            Creates an object to be used to describe a Subscription that is going to be subscribed to 
+            through Lightstreamer Server. The object can be supplied to 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)"/> and 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/>, in order to bring the Subscription 
+            to "active" or back to "inactive" state. <br/>
+            Note that all of the methods used to describe the subscription to the server can only be 
+            called while the instance is in the "inactive" state; the only exception is 
+            <seealso cref="P:com.lightstreamer.client.Subscription.RequestedMaxFrequency"/>.
+            </summary>
+            <param name="subscriptionMode"> the subscription mode for the items, required by Lightstreamer Server. 
+            Permitted values are:
+            <ul>
+             <li>MERGE</li>
+             <li>DISTINCT</li>
+             <li>RAW</li>
+             <li>COMMAND</li>
+            </ul> </param>
+            <param name="items"> an array of items to be subscribed to through Lightstreamer server. <br/>
+            It is also possible specify the "Item List" or "Item Group" later through 
+            <seealso cref="P:com.lightstreamer.client.Subscription.Items"/> and <seealso cref="P:com.lightstreamer.client.Subscription.ItemGroup"/>. </param>
+            <param name="fields"> an array of fields for the items to be subscribed to through Lightstreamer Server. <br/>
+            It is also possible to specify the "Field List" or "Field Schema" later through 
+            <seealso cref="P:com.lightstreamer.client.Subscription.Fields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.FieldSchema"/>.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.#ctor(System.String,System.String,System.String[])">
+            <summary>
+            Creates an object to be used to describe a Subscription that is going to be subscribed to 
+            through Lightstreamer Server. The object can be supplied to 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)"/> and 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/>, in order to bring the Subscription 
+            to "active" or back to "inactive" state. <br/>
+            Note that all of the methods used to describe the subscription to the server can only be 
+            called while the instance is in the "inactive" state; the only exception is 
+            <seealso cref="P:com.lightstreamer.client.Subscription.RequestedMaxFrequency"/>.
+            </summary>
+            <param name="subscriptionMode"> the subscription mode for the items, required by Lightstreamer Server. 
+            Permitted values are:
+            <ul>
+             <li>MERGE</li>
+             <li>DISTINCT</li>
+             <li>RAW</li>
+             <li>COMMAND</li>
+            </ul> </param>
+            <param name="item"> the item name to be subscribed to through Lightstreamer Server. </param>
+            <param name="fields"> an array of fields for the items to be subscribed to through Lightstreamer Server. <br/>
+            It is also possible to specify the "Field List" or "Field Schema" later through 
+            <seealso cref="P:com.lightstreamer.client.Subscription.Fields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.FieldSchema"/>.
+            </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.#ctor(System.String)">
+            <summary>
+            Creates an object to be used to describe a Subscription that is going to be subscribed to 
+            through Lightstreamer Server. The object can be supplied to 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)"/> and 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/>, in order to bring the Subscription 
+            to "active" or back to "inactive" state. <br/>
+            Note that all of the methods used to describe the subscription to the server can only be 
+            called while the instance is in the "inactive" state; the only exception is 
+            <seealso cref="P:com.lightstreamer.client.Subscription.RequestedMaxFrequency"/>.
+            </summary>
+            <param name="subscriptionMode"> the subscription mode for the items, required by Lightstreamer Server. 
+            Permitted values are:
+            <ul>
+             <li>MERGE</li>
+             <li>DISTINCT</li>
+             <li>RAW</li>
+             <li>COMMAND</li>
+            </ul> </param>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.addListener(com.lightstreamer.client.SubscriptionListener)">
+            <summary>
+            Adds a listener that will receive events from the Subscription instance. <br/> 
+            The same listener can be added to several different Subscription instances.
+            
+            <b>Lifecycle:</b>  A listener can be added at any time. A call to add a listener already 
+            present will be ignored.
+            </summary>
+            <param name="listener"> An object that will receive the events as documented in the 
+            SubscriptionListener interface.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.Subscription.removeListener(com.lightstreamer.client.SubscriptionListener)" />
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.removeListener(com.lightstreamer.client.SubscriptionListener)">
+            <summary>
+            Removes a listener from the Subscription instance so that it will not receive 
+            events anymore.
+            
+            <b>Lifecycle:</b>  a listener can be removed at any time.
+            </summary>
+            <param name="listener"> The listener to be removed.
+            </param>
+            <seealso cref="M:com.lightstreamer.client.Subscription.addListener(com.lightstreamer.client.SubscriptionListener)" />
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Listeners">
+            <summary>
+            Returns a list containing the <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> instances that were 
+            added to this client. </summary>
+            <returns> a list containing the listeners that were added to this client. </returns>
+            <seealso cref="M:com.lightstreamer.client.Subscription.addListener(com.lightstreamer.client.SubscriptionListener)" />
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Active">
+            <value>
+            Read-only property <c>Active</c> checks if the Subscription is currently "active" or not.
+            Most of the Subscription properties cannot be modified if a Subscription is "active".<br/>
+            The status of a Subscription is changed to "active" through the  
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)"/> method and back to 
+            "inactive" through the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/> one.<br/>
+            Returns true/false if the Subscription is "active" or not.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time.
+            </value>
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.subscribe(com.lightstreamer.client.Subscription)" />
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)" />
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Subscribed">
+            <value>
+            Read-only property <c>Subscribed</c> thtat checks if the Subscription is currently subscribed
+            to through the server or not.<br/>
+            This flag is switched to true by server sent Subscription events, and 
+            back to false in case of client disconnection, 
+            <seealso cref="M:com.lightstreamer.client.LightstreamerClient.unsubscribe(com.lightstreamer.client.Subscription)"/> calls and server 
+            sent unsubscription events.<br/>
+            Returns true/false if the Subscription is subscribed to through the server or not.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.DataAdapter">
+            <value>
+            Property <c>DataAdapter</c> represents the name of the Data Adapter (within the Adapter Set used by the current session)
+            that supplies all the items for this Subscription.<br/>
+            The Data Adapter name is configured on the server side through the "name" attribute of the
+            "data_provider" element, in the "adapters.xml" file that defines the Adapter Set (a missing
+            attribute configures the "DEFAULT" name).<br/>
+            Note that if more than one Data Adapter is needed to supply all the items in a set of items, then
+            it is not possible to group all the items of the set in a single Subscription. Multiple
+            Subscriptions have to be defined.<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its
+            "inactive" state.<br/>
+            <br/>
+            <b>Default value:</b> The default Data Adapter for the Adapter Set, configured as "DEFAULT" on the Server.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Mode">
+            <value>
+            Read-only property <c>Mode</c> represents the mode specified in the constructor for
+            this Subscription.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Items">
+            <value>
+            Property <c>Items</c> represents the "Item List"  to be subscribed to through Lightstreamer Server.
+            Any call to set this property will override any "Item List" or "Item Group" previously specified.
+            Note that if the single-item-constructor was used, this method will return an array 
+            of length 1 containing such item.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can only be called if the Subscription has been initialized 
+            with an "Item List".
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.ItemGroup">
+            <value>
+            Property <c>ItemGroup</c> represents the the "Item Group" to be subscribed to through
+            Lightstreamer Server.
+            Any call to set this property will override any "Item List" or "Item Group" previously specified.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can only be called if the Subscription has been initialized
+            using an "Item Group".
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Fields">
+            <value>
+            Property <c>Fields</c> represents the "Field  List"  to be subscribed to through Lightstreamer Server.
+            Any call to set this property will override any "Field  List" or "Field Schema" previously specified.<br/>
+            <br/>
+            <b>Lifecycle:</b> This property can be set only while the Subscription instance is in its "inactive" state.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.FieldSchema">
+            <value>
+            Property <c>FieldSchema</c> represents the "Field Schema" to be subscribed to through Lightstreamer Server.
+            Any call to set this property will override any "Field  List" or "Field Schema" previously specified.<br/>
+            <br/>
+            <b>Lifecycle:</b> This property can be set only while the Subscription instance is in its "inactive" state.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.RequestedBufferSize">
+            <value>
+            Property <c>RequestedBufferSize</c> represents the length to be requested to Lightstreamer Server
+            for the internal queuing buffers for the items in the Subscription. A Queuing buffer is used by
+            the Server to accumulate a burst of updates for an item, so that they can all be sent to the
+            client, despite of bandwidth or frequency limits. It can be used only when the subscription mode
+            is MERGE or DISTINCT and unfiltered dispatching has not been requested. Note that the Server may
+            pose an upper limit on the size of its internal buffers.<br/>
+            The value of this property is integer number, representing the length of the internal queuing
+            buffers to be used in the Server. If the string "unlimited" is supplied, then no buffer size
+            limit is requested (the check is case insensitive). It is also possible to supply a null value
+            to stick to the Server default (which currently depends on the subscription mode).<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its
+            "inactive" state.<br/>
+            <br/>
+            <b>Default value:</b> null, meaning to lean on the Server default based on the subscription mode.
+            This means that the buffer size will be 1 for MERGE subscriptions and "unlimited" for DISTINCT
+            subscriptions. See the "General Concepts" document for further details.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.RequestedSnapshot">
+            <value>
+            Property <c>RequestedSnapshot</c> enables/disables snapshot delivery request for the items in
+            the Subscription. The snapshot can be requested only if the Subscription mode is
+            MERGE, DISTINCT or COMMAND.
+            The value can be "yes"/"no" to request/not request snapshot delivery (the check is case insensitive).
+            If the Subscription mode is DISTINCT, instead of "yes", it is also possible to supply an integer
+            number, to specify the requested length of the snapshot (though the length of the received
+            snapshot may be less than requested, because of insufficient data or server side limits);
+            passing "yes" means that the snapshot length should be determined only by the Server. Null is
+            also a valid value; if specified, no snapshot preference will be sent to the server that will
+            decide itself whether or not to send any snapshot.<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its "inactive" state.<br/>
+            <br/>
+            <b>Default value:</b> "yes" if the Subscription mode is not "RAW", null otherwise.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.RequestedMaxFrequency">
+            <value>
+            Property <c>RequestedMaxFrequency</c> represents the maximum update frequency to be requested to
+            Lightstreamer Server for all the items in the Subscription. It can be used only if the
+            Subscription mode is MERGE, DISTINCT or COMMAND (in the latter case, the frequency limitation
+            applies to the UPDATE events for each single key). For Subscriptions with two-level behavior
+            (see <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/> and 
+            <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/>,
+            the specified frequency limit applies to both first-level and second-level items.<br/>
+            Note that frequency limits on the items can also be set on the server side and this request can
+            only be issued in order to furtherly reduce the frequency, not to rise it beyond these limits.<br/>
+            This method can also be used to request unfiltered dispatching for the items in the Subscription.
+            However, unfiltered dispatching requests may be refused if any frequency limit is posed on the
+            server side for some item.<br/>
+            The value can be a decimal number, representing the maximum update frequency (expressed in updates per
+            second) for each item in the Subscription; for instance, with a setting of 0.5, for each single
+            item, no more than one update every 2 seconds will be received. If the string "unlimited" is
+            supplied, then no frequency limit is requested. It is also possible to supply the string
+            "unfiltered", to ask for unfiltered dispatching, if it is allowed for the items, or a null value
+            to stick to the Server default (which currently corresponds to "unlimited"). The check for the
+            string constants is case insensitive.<br/>
+            <br/>
+            <b>Edition Note:</b> A further global frequency limit could also be imposed by the Server,
+            depending on Edition and License Type; this specific limit also applies to RAW mode and to
+            unfiltered dispatching.
+            To know what features are enabled by your license, please see the License tab of the Monitoring Dashboard (by default,
+            available at /dashboard).<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can can be called at any time with some differences based on the
+            Subscription status:
+            <ul>
+            <li>If the Subscription instance is in its "inactive" state then this method can be called at will.</li>
+            <li>If the Subscription instance is in its "active" state then the method can still be called
+            unless the current value is "unfiltered" or the supplied value is "unfiltered" or null. If the
+            Subscription instance is in its "active" state and the connection to the server is currently open,
+            then a request to change the frequency of the Subscription on the fly is sent to the server.</li>
+            </ul>
+            <br/>
+            <b>Default value:</b> null, meaning to lean on the Server default based on the subscription mode.
+            This consists, for all modes, in not applying any frequency limit to the subscription (the same
+            as "unlimited"); see the "General Concepts" document for further details.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.Selector">
+            <value>
+            Property <c>Selector</c> represents the selector name for all the items in the Subscription.
+            The selector is a filter on the updates received. It is executed on the Server and implemented
+            by the Metadata Adapter.<br/>
+            The name of a selector should be recognized by the Metadata Adapter, or can be null to unset
+            the selector.<br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its
+            "inactive" state.<br/>
+            <br/>
+            <b>Default value:</b> null (no selector).
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.CommandPosition">
+            <value>
+            Read-only property <c>CommandPosition</c> represents the "command" field in a COMMAND
+            Subscription.<br/>
+            This method can only be used if the Subscription mode is COMMAND and the Subscription 
+            was initialized using a "Field Schema".<br/>
+            The value is the 1-based position of the "command" field within the "Field Schema".<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time after the first 
+            <seealso cref="M:com.lightstreamer.client.SubscriptionListener.onSubscription"/> event.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.KeyPosition">
+            <value>
+            Read-only property <c>KeyPosition</c> represents the position of the "key" field in a
+            COMMAND Subscription.<br/>
+            This method can only be used if the Subscription mode is COMMAND
+            and the Subscription was initialized using a "Field Schema".<br/>
+            The value is the 1-based position of the "key" field within the "Field Schema".<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.CommandSecondLevelDataAdapter">
+            <value>
+            Property <c>CommandSecondLevelDataAdapter</c> represents the name of the second-level Data Adapter
+            (within the Adapter Set used by the current session) that supplies all the second-level items.<br/>
+            All the possible second-level items should be supplied in "MERGE" mode with snapshot available.<br/>
+            The Data Adapter name is configured on the server side through the "name" attribute of the 
+            data_provider element, in the "adapters.xml" file that defines the Adapter Set (a missing
+            attribute configures the "DEFAULT" name).<br/>
+            A null value is equivalent to the "DEFAULT" name.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/>, <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/><br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its
+            "inactive" state.<br/>
+            <br/>
+            <b>Default value:</b> The default Data Adapter for the Adapter Set, configured as "DEFAULT"
+            on the Server.
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields">
+            <value>
+            Property <c>CommandSecondLevelFields</c> represents the "Field List" to be subscribed to
+            through Lightstreamer Server for the second-level items. It can only be used on COMMAND
+            Subscriptions.<br/>
+            Any call to this method will override any "Field List" or "Field Schema" previously specified
+            for the second-level.<br/>
+            Calling this method enables the two-level behavior: in synthesis, each time a new key is received
+            on the COMMAND Subscription, the key value is treated as an Item name and an underlying
+            Subscription for this Item is created and subscribed to automatically, to feed fields specified
+            by this method. This mono-item Subscription is specified through an "Item List" containing only
+            the Item name received. As a consequence, all the conditions provided for subscriptions through
+            Item Lists have to be satisfied. The item is subscribed to in "MERGE" mode, with snapshot request
+            and with the same maximum frequency setting as for the first-level items (including the
+            "unfiltered" case). All other Subscription properties are left as the default. When the key is
+            deleted by a DELETE command on the first-level Subscription, the associated second-level
+            Subscription is also unsubscribed from.<br/>
+            Specifying null as parameter will disable the two-level behavior.<br/>
+            Ensure that no name conflict is generated between first-level and second-level fields. In case
+            of conflict, the second-level field will not be accessible by name, but only by position.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/><br/>
+            <br/>
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in its
+            "inactive" state.<br/>
+            </value>
+        </member>
+        <member name="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema">
+            <value>
+            Property <c>CommandSecondLevelFieldSchema</c> represents the "Field Schema" to be subscribed to
+            through Lightstreamer Server for the second-level items. It can only be used on
+            COMMAND Subscriptions.<br/>
+            Any call to this method will override any "Field List" or "Field Schema" previously specified for
+            the second-level.<br/>
+            Calling this method enables the two-level behavior: in synthesis, each time a new key is received
+            on the COMMAND Subscription, the key value is treated as an Item name and an underlying
+            Subscription for this Item is created and subscribed to automatically, to feed fields specified
+            by this method. This mono-item Subscription is specified through an "Item List" containing only
+            the Item name received. As a consequence, all the conditions provided for subscriptions through
+            Item Lists have to be satisfied. The item is subscribed to in "MERGE" mode, with snapshot request
+            and with the same maximum frequency setting as for the first-level items (including the
+            "unfiltered" case). All other Subscription properties are left as the default. When the key is
+            deleted by a DELETE command on the first-level Subscription, the associated second-level
+            Subscription is also unsubscribed from.<br/>
+            Specify null as parameter will disable the two-level behavior.<br/>
+            See also: <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/><br/>
+            <br/>
+            
+            <b>Lifecycle:</b> This method can only be called while the Subscription instance is in
+            its "inactive" state.
+            </value>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getValue(System.String,System.String)">
+            <summary>
+            Returns the latest value received for the specified item/field pair.<br/>
+            It is suggested to consume real-time data by implementing and adding
+            a proper <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            In case of COMMAND Subscriptions, the value returned by this
+            method may be misleading, as in COMMAND mode all the keys received, being
+            part of the same item, will overwrite each other; for COMMAND Subscriptions,
+            use <seealso cref="M:com.lightstreamer.client.Subscription.getCommandValue(System.String,System.String,System.String)"/> instead.<br/>
+            Note that internal data is cleared when the Subscription is 
+            unsubscribed from.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time; if called 
+            to retrieve a value that has not been received yet, then it will return null.
+            </summary>
+            <param name="itemName"> an item in the configured "Item List" </param>
+            <param name="fieldName"> a field in the configured "Field List" </param>
+            <returns> the current value for the specified field of the specified item
+            (possibly null), or null if no value has been received yet.
+            </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getValue(System.Int32,System.Int32)">
+            <summary>
+            Returns the latest value received for the specified item/field pair.<br/>
+            It is suggested to consume real-time data by implementing and adding
+            a proper <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            In case of COMMAND Subscriptions, the value returned by this
+            method may be misleading, as in COMMAND mode all the keys received, being
+            part of the same item, will overwrite each other; for COMMAND Subscriptions,
+            use <seealso cref="M:com.lightstreamer.client.Subscription.getCommandValue(System.Int32,System.String,System.Int32)"/> instead. <br/>
+            Note that internal data is cleared when the Subscription is 
+            unsubscribed from.<br/>
+            Returns null if no value has been received yet for the specified item/field pair.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time; if called 
+            to retrieve a value that has not been received yet, then it will return null.
+            </summary>
+            <param name="itemPos"> the 1-based position of an item within the configured "Item Group"
+            or "Item List" </param>
+            <param name="fieldPos"> the 1-based position of a field within the configured "Field Schema"
+            or "Field List" </param>
+            <returns> the current value for the specified field of the specified item
+            (possibly null), or null if no value has been received yet.
+            </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getValue(System.String,System.Int32)">
+            <summary>
+            Returns the latest value received for the specified item/field pair.<br/>
+            It is suggested to consume real-time data by implementing and adding
+            a proper <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            In case of COMMAND Subscriptions, the value returned by this
+            method may be misleading, as in COMMAND mode all the keys received, being
+            part of the same item, will overwrite each other; for COMMAND Subscriptions,
+            use <seealso cref="M:com.lightstreamer.client.Subscription.getCommandValue(System.String,System.String,System.Int32)"/> instead.<br/>
+            Note that internal data is cleared when the Subscription is 
+            unsubscribed from.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time; if called 
+            to retrieve a value that has not been received yet, then it will return null.
+            </summary>
+            <param name="itemName"> an item in the configured "Item List" </param>
+            <param name="fieldPos"> the 1-based position of a field within the configured "Field Schema"
+            or "Field List" </param>
+            <returns> the current value for the specified field of the specified item
+            (possibly null), or null if no value has been received yet.
+            </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getValue(System.Int32,System.String)">
+            <summary>
+            Returns the latest value received for the specified item/field pair.<br/>
+            It is suggested to consume real-time data by implementing and adding
+            a proper <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            In case of COMMAND Subscriptions, the value returned by this
+            method may be misleading, as in COMMAND mode all the keys received, being
+            part of the same item, will overwrite each other; for COMMAND Subscriptions,
+            use <seealso cref="M:com.lightstreamer.client.Subscription.getCommandValue(System.Int32,System.String,System.String)"/> instead.<br/>
+            Note that internal data is cleared when the Subscription is 
+            unsubscribed from.<br/>
+            <br/>
+            <b>Lifecycle:</b>  This method can be called at any time; if called 
+            to retrieve a value that has not been received yet, then it will return null. </summary>
+            <param name="itemPos"> the 1-based position of an item within the configured "Item Group"
+            or "Item List" </param>
+            <param name="fieldName"> a field in the configured "Field List" </param>
+            <returns> the current value for the specified field of the specified item
+            (possibly null), or null if no value has been received yet.
+            </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getCommandValue(System.String,System.String,System.String)">
+            <summary>
+            Returns the latest value received for the specified item/key/field combination. 
+            This method can only be used if the Subscription mode is COMMAND. 
+            Subscriptions with two-level behavior
+            are also supported, hence the specified field 
+            (see <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/>)
+            can be either a first-level or a second-level one. <br/>
+            It is suggested to consume real-time data by implementing and adding a proper 
+            <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            Note that internal data is cleared when the Subscription is unsubscribed from.
+            </summary>
+            <param name="itemName"> an item in the configured "Item List" </param>
+            <param name="keyValue"> the value of a key received on the COMMAND subscription. </param>
+            <param name="fieldName"> a field in the configured "Field List" </param>
+            <returns> the current value for the specified field of the specified key within the 
+            specified item (possibly null), or null if the specified key has not been added yet 
+            (note that it might have been added and then deleted). </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getCommandValue(System.Int32,System.String,System.Int32)">
+            <summary>
+            Returns the latest value received for the specified item/key/field combination. 
+            This method can only be used if the Subscription mode is COMMAND. 
+            Subscriptions with two-level behavior
+            (see <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/>)
+            are also supported, hence the specified field 
+            can be either a first-level or a second-level one. <br/>
+            It is suggested to consume real-time data by implementing and adding a proper 
+            <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method. <br/>
+            Note that internal data is cleared when the Subscription is unsubscribed from.
+            </summary>
+            <param name="itemPos"> the 1-based position of an item within the configured "Item Group"
+            or "Item List" </param>
+            <param name="keyValue"> the value of a key received on the COMMAND subscription. </param>
+            <param name="fieldPos"> the 1-based position of a field within the configured "Field Schema"
+            or "Field List" </param>
+            <returns> the current value for the specified field of the specified key within the 
+            specified item (possibly null), or null if the specified key has not been added yet 
+            (note that it might have been added and then deleted). </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getCommandValue(System.Int32,System.String,System.String)">
+            <summary>
+            Returns the latest value received for the specified item/key/field combination. 
+            This method can only be used if the Subscription mode is COMMAND. 
+            Subscriptions with two-level behavior
+            (see <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/>)
+            are also supported, hence the specified field 
+            can be either a first-level or a second-level one.<br/>
+            It is suggested to consume real-time data by implementing and adding a proper 
+            <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            Note that internal data is cleared when the Subscription is unsubscribed from.
+            </summary>
+            <param name="itemPos"> the 1-based position of an item within the configured "Item Group"
+            or "Item List" </param>
+            <param name="keyValue"> the value of a key received on the COMMAND subscription. </param>
+            <param name="fieldName"> a field in the configured "Field List" </param>
+            <returns> the current value for the specified field of the specified key within the 
+            specified item (possibly null), or null if the specified key has not been added yet 
+            (note that it might have been added and then deleted). </returns>
+        </member>
+        <member name="M:com.lightstreamer.client.Subscription.getCommandValue(System.String,System.String,System.Int32)">
+            <summary>
+            Returns the latest value received for the specified item/key/field combination. 
+            This method can only be used if the Subscription mode is COMMAND. 
+            Subscriptions with two-level behavior
+            (see <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFields"/> and <seealso cref="P:com.lightstreamer.client.Subscription.CommandSecondLevelFieldSchema"/>)
+            are also supported, hence the specified field 
+            can be either a first-level or a second-level one.<br/>
+            It is suggested to consume real-time data by implementing and adding a proper 
+            <seealso cref="T:com.lightstreamer.client.SubscriptionListener"/> rather than probing this method.<br/>
+            Note that internal data is cleared when the Subscription is unsubscribed from.
+            </summary>
+            <param name="itemName"> an item in the configured "Item List" </param>
+            <param name="keyValue"> the value of a key received on the COMMAND subscription. </param>
+            <param name="fieldPos"> the 1-based position of a field within the configured "Field Schema"
+            or "Field List" </param>
+            <returns> the current value for the specified field of the specified key within the 
+            specified item (possibly null), or null if the specified key has not been added yet 
+            (note that it might have been added and then deleted). </returns>
+        </member>
+        <member name="T:com.lightstreamer.log.ConsoleLoggerProvider">
+             <summary>
+             Simple concrete logging provider that logs on the system console.
+            
+             To be used, an instance of this class has to be passed to the library through the <seealso cref="M:com.lightstreamer.client.LightstreamerClient.setLoggerProvider(com.lightstreamer.log.ILoggerProvider)"/>.
+             </summary>
+        </member>
+        <member name="M:com.lightstreamer.log.ConsoleLoggerProvider.#ctor(System.Int32)">
+             <summary>
+             Creates an instance of the concrete system console logger.</summary>
+            
+             <param name="level"> The desired logging level. See <seealso cref="T:com.lightstreamer.log.ConsoleLogLevel"/>.</param>
+        </member>
+        <member name="M:com.lightstreamer.log.ConsoleLoggerProvider.GetLogger(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:com.lightstreamer.log.ConsoleLogLevel">
+            <summary>Logging level. See <seealso cref="T:com.lightstreamer.log.ConsoleLoggerProvider"/>.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.TRACE">
+             <summary>Trace logging level.
+            
+             This level enables all logging.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.DEBUG">
+             <summary>Debug logging level.
+            
+             This level enables all logging except tracing.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.INFO">
+            <summary>Info logging level.
+            
+            This level enables logging for information, warnings, errors and fatal errors.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.WARN">
+             <summary>Warn logging level.
+            
+             This level enables logging for warnings, errors and fatal errors.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.ERROR">
+             <summary>Error logging level.
+            
+             This level enables logging for errors and fatal errors.</summary>
+        </member>
+        <member name="F:com.lightstreamer.log.ConsoleLogLevel.FATAL">
+             <summary>Fatal logging level.
+            
+             This level enables logging for fatal errors only.</summary>
+        </member>
+    </members>
+</doc>
