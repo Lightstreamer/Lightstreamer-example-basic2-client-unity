@@ -154,10 +154,11 @@ and adapters.xml file for the Portfolio Demo, should look like:
 
 To build your own version of the demo executable, instead of using the one provided in the `deploy.zip` file from the [Install](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity#install) section above, follow these steps:
 
-* A Unity 2021 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
+* A Unity 6 Development platform must be installed to build and run this demo. Download and Install Unity 3D from: [https://unity3d.com/get-unity/download](https://unity3d.com/get-unity/download).
 * Clone this project: `> git clone https://github.com/Weswit/Lightstreamer-example-basic2-client-unity`.
-* Get the  binaries files of the library (`Lightstreamer.DotNetStandard.Client.Api.dll`, `Lightstreamer.DotNetStandard.Client.dll`, `Lightstreamer.DotNetStandard.Client.Haxe.dll`, and `Lightstreamer.DotNetStandard.Client.Net.dll`) and the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 6 and put them in the `Assets\LS\Lightstreamer_client_library` folder; then import all of them as new Assets.
-* Open `SndScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
+* Install the Lightstreamer client library; here you have two choice 
+	* Get the  binaries files of the library (`Lightstreamer.DotNetStandard.Client.Api.dll`, `Lightstreamer.DotNetStandard.Client.dll`, `Lightstreamer.DotNetStandard.Client.Haxe.dll`, and `Lightstreamer.DotNetStandard.Client.Net.dll`) and the dependency [Microsoft.AspNetCore.JsonPatch.dll](https://www.nuget.org/packages/Microsoft.AspNetCore.JsonPatch/) from NuGet [Lightstreamer.DotNetStandard.Client](https://www.nuget.org/packages/Lightstreamer.DotNetStandard.Client/) version 6 and put them in the `Assets\LS\Lightstreamer_client_library` folder; then import all of them as new Assets.
+* Open `SampleScene.unity` file in `Asset` subfolder double clicking on it. The Unity Development Environment should open.
 * You can then build and run the project by menu `File` and then `Build & Run`.
 * Please note that in the inspector of the `World` object you can choose the Lightstreamer server targeted by the demo; you can change the `Push Url` parameter to 'http://localhost:8080' or 'https://push.lightstreamer.com' depending you want to use your local instance of Lightstremaer server or our public installations.
 
