@@ -6,7 +6,7 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Live Demo
 
-[![Demo ScreenShot](screen_demo_large2.png)](https://demos.lightstreamer.com/UnityDemo/BasicUnityDemo.zip)<br>
+[![Demo ScreenShot](screen_demo_large2.png)](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases/download/for_unity6/BasicUnityDemo.zip)<br>
 
 ### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](http://demos.lightstreamer.com/UnityDemo2/BasicUnityDemo.zip)<br>
 (for Windows systems: download BasicUnityDemo.zip; unzip it; open myworld directory; launch lightstreamer-unity-test.exe)<br>
