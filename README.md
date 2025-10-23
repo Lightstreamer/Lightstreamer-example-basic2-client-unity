@@ -6,7 +6,7 @@ This project includes a demo client showing the integration between [Lightstream
 
 ## Live Demo
 
-[![Demo ScreenShot](screen_demo_large2.png)](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases/download/for_unity6/BasicUnityDemo.zip)<br>
+[![Demo ScreenShot](lightstreamer-unity-test2025-10-2314-19-28.gif)](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases/download/for_unity6/BasicUnityDemo.zip)<br>
 
 ### [![](http://demos.lightstreamer.com/site/img/play.png) View live demo](https://github.com/Lightstreamer/Lightstreamer-example-basic2-client-unity/releases/download/for_unity6/BasicUnityDemo.zip)<br>
 (for Windows systems: download BasicUnityDemo.zip; unzip it; open myworld directory; launch lightstreamer-unity-test.exe)<br>
@@ -198,6 +198,8 @@ To build a project with IL2CPP, you need to have the backend installed in your U
 	3. Click on the Scripting Backend dropdown menu, then select IL2CPP.
 
 ## See Also
+
+* [Supercharge Your Unity Projects with Real-Time Data from Lightstreamer](https://lightstreamer.com/blog/supercharge-your-unity-projects-with-real-time-data-from-lightstreamer/)
 
 ### Lightstreamer Adapters Needed by This Demo Client
 
