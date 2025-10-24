@@ -48,6 +48,9 @@ The source files include:
 
 * **RTQuoteListener.cs** – An implementation of the `SubscriptionListener` interface that handles data updates and subscription termination notifications.  
 
+* **OrbitCamera.cs**: allows mouse-driven rotation and zoom of the camera around a target object, enhancing interactivity when exploring 3D scenes.
+
+
 Check out the sources for further explanations. The Lightstreamer Documentation is available at [lightstreamer.com/doc](https://lightstreamer.com/doc)<br>
 
 <i>NOTE: Not all the functionalities of the .Net Standard Client API for Lightstreamer are leveraged by the classes listed above. You can easily expand those functionalities using the [Lightstreamer .NET Standard API](https://lightstreamer.com/api/ls-dotnetstandard-client/latest/api/Index.html) as a reference. </i>

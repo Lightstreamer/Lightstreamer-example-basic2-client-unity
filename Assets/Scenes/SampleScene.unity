@@ -701,9 +701,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OrbitCamera
   target: {fileID: 2008455406}
-  distance: 10
+  distance: 6
   zoomSpeed: 5
-  minDistance: 5
+  minDistance: 4
   maxDistance: 15
   xSpeed: 200
   ySpeed: 200

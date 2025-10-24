@@ -3,15 +3,15 @@ using UnityEngine;
 public class OrbitCamera : MonoBehaviour
 {
     public Transform target;        
-    public float distance = 10f;    
+    public float distance = 5f;    
     public float zoomSpeed = 5f;    
-    public float minDistance = 2f;  
-    public float maxDistance = 20f;
+    public float minDistance = 3f;  
+    public float maxDistance = 15f;
 
     public float xSpeed = 120f;     
     public float ySpeed = 120f;     
-    public float yMinLimit = -20f;  
-    public float yMaxLimit = 80f;   
+    public float yMinLimit = -40f;  
+    public float yMaxLimit = 40f;   
 
     private float x = 0f;
     private float y = 0f;
