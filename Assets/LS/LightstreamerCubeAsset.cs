@@ -9,7 +9,11 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
     public Transform stockCube;
 
-    public float refscale = 0.3f;   // quanto incide la % sull’altezza
+    public float refscale = 0.3f;   // quanto incide la % sull'altezza
+    
+    [Header("Adattamento DPI/Risoluzione")]
+    public bool useDPIScaling = true;   // abilita scalatura automatica
+    public float manualScaleFactor = 1f; // fattore di scala manuale (se DPI disabilitato)
     
     public float baselineY = 0f;       // la linea base comune (es. piano di riferimento)
 
@@ -17,9 +21,25 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
     void SetHeight(Transform cube, float percentChange)
     {
-        float newHeight = Mathf.Max(0.1f, Mathf.Abs(percentChange) * refscale);
+        // Calcola il fattore di scala effettivo
+        float effectiveScale = refscale;
+        
+        if (useDPIScaling && DPIManager.Instance != null)
+        {
+            float dpiScale = DPIManager.Instance.GetScaleFactor();
+            effectiveScale = refscale * dpiScale;
+            
+            Debug.Log($"DPI Scaling - Original: {refscale}, DPI Factor: {dpiScale}, Effective: {effectiveScale}");
+        }
+        else if (!useDPIScaling)
+        {
+            effectiveScale = refscale * manualScaleFactor;
+            Debug.Log($"Manual Scaling - Original: {refscale}, Manual Factor: {manualScaleFactor}, Effective: {effectiveScale}");
+        }
+        
+        float newHeight = Mathf.Max(0.1f, Mathf.Abs(percentChange) * effectiveScale);
 
-        Debug.Log("Setting height to: " + newHeight + " (change: " + percentChange + ", scaleFactor: " + refscale + ")");
+        Debug.Log("Setting height to: " + newHeight + " (change: " + percentChange + ", scaleFactor: " + effectiveScale + ")");
 
         // Aggiorna scala
         Vector3 scale = cube.localScale;
