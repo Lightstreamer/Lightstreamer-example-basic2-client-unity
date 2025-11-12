@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1536
     height: 772.8
   m_ShowMode: 4
-  m_Title: Inspector
+  m_Title: Project
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -343,9 +343,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 7caf0000
-    m_LastClickedID: 44924
-    m_ExpandedIDs: 000000001caf00001eaf0000
+    m_SelectedIDs: d4c00000
+    m_LastClickedID: 49364
+    m_ExpandedIDs: 000000002caf00002eaf0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -374,7 +374,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000001caf00001eaf0000
+    m_ExpandedIDs: 000000002caf00002eaf0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -458,7 +458,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 217.59998
+  m_LastVerticalScrollValue: 1620
   m_GlobalObjectId: 
   m_InspectorMode: 0
   m_LockTracker:
@@ -505,7 +505,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 7a3dffff923dffff1c40ffff0248ffff1a48ffffd64affff7855ffff9055ffff1a58ffff2060ffff3860ffffc262ffffc46affffdc6affff666dffffae75ffffc675ffff5078ffff2c80ffff4480ffffce82ffff048effff1c8effffd890ffff20a5ffff38a5fffff8a7ffff4cb6ffff64b6fffff2b8fffff8c0ffff10c1ffffd0c3ffff32ceffff4aceffff0ad1ffff74faffff7cad00004ccf0000
+      m_ExpandedIDs: 28e6ffff40e6ffffd6e8ffff66f0ffff7ef0ffff4ef3ffffecfaffff7cad000038c00000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1134,10 +1134,10 @@ MonoBehaviour:
     m_TextWithWhitespace: "Console\u200B"
   m_Pos:
     serializedVersion: 2
-    x: 2304
-    y: 502.4
-    width: 1070.2
-    height: 267.59998
+    x: 1920
+    y: 842
+    width: 1870.3334
+    height: 504.00006
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0

@@ -848,6 +848,8 @@ GameObject:
   - component: {fileID: 485301352}
   - component: {fileID: 485301354}
   - component: {fileID: 485301355}
+  - component: {fileID: 485301356}
+  - component: {fileID: 485301357}
   m_Layer: 0
   m_Name: DPIManager
   m_TagString: Untagged
@@ -883,7 +885,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DPIManager
   baseDPI: 96
-  baseResolution: {x: 1920, y: 1080}
+  baseResolution: {x: 1024, y: 768}
+  useManualCorrection: 0
+  manualScaleCorrection: 1
   currentDPI: 0
   dpiScale: 0
   currentResolution: {x: 0, y: 0}
@@ -901,13 +905,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResolutionManager
   autoDetectBestResolution: 1
   maintainAspectRatio: 1
-  preferredResolution: {x: 1920, y: 1080}
+  preferredResolution: {x: 1024, y: 768}
   minimumResolution: {x: 1024, y: 768}
   fullscreenMode: 3
   allowFullscreenToggle: 1
   currentResolution: {x: 0, y: 0}
   nativeResolution: {x: 0, y: 0}
   aspectRatio: 0
+--- !u!114 &485301356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485301351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a73034a59b508429b1a82ddd15355a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResolutionDebugUI
+  debugText: {fileID: 0}
+  debugCanvas: {fileID: 0}
+  showDebugInfo: 1
+  toggleKey: 282
+--- !u!114 &485301357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485301351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17be90907ee5d0d42addd96826fd97b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutoScaleCalibrator
+  enableAutoCalibration: 1
+  applyCalibrationOnStart: 1
+  knownPCProfiles: []
+  defaultScaleCorrection: 1
+  dpiThreshold: 10
+  currentPCSignature: 
+  appliedCorrection: 1
+  profileFound: 0
 --- !u!1 &508670664
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,6 +1002,8 @@ MonoBehaviour:
   refscale: 0.3
   useDPIScaling: 1
   manualScaleFactor: 1
+  usePerPCCorrection: 0
+  pcSpecificCorrection: 1
   baselineY: 0
 --- !u!65 &508670667
 BoxCollider:
@@ -1350,6 +1392,8 @@ MonoBehaviour:
   refscale: 0.3
   useDPIScaling: 1
   manualScaleFactor: 1
+  usePerPCCorrection: 0
+  pcSpecificCorrection: 1
   baselineY: 0
 --- !u!1 &780867283
 GameObject:
@@ -2397,6 +2441,8 @@ MonoBehaviour:
   refscale: 0.3
   useDPIScaling: 1
   manualScaleFactor: 1
+  usePerPCCorrection: 0
+  pcSpecificCorrection: 1
   baselineY: 0
 --- !u!65 &2008455408
 BoxCollider:

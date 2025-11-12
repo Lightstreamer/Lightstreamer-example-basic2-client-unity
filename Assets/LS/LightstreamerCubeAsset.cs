@@ -9,19 +9,29 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
     public Transform stockCube;
 
-    public float refscale = 0.3f;   // quanto incide la % sull'altezza
+    public float refscale = 0.3f;   // how much the percentage affects the height
     
-    [Header("Adattamento DPI/Risoluzione")]
-    public bool useDPIScaling = true;   // abilita scalatura automatica
-    public float manualScaleFactor = 1f; // fattore di scala manuale (se DPI disabilitato)
+    [Header("DPI/Resolution Adaptation")]
+    public bool useDPIScaling = true;   // enable automatic scaling
+    public float manualScaleFactor = 1f; // manual scale factor (if DPI disabled)
     
-    public float baselineY = 0f;       // la linea base comune (es. piano di riferimento)
+    [Header("PC Specific Correction")]
+    public bool usePerPCCorrection = false; // enable corrections for specific PCs
+    public float pcSpecificCorrection = 1f; // correction for this specific PC
+    
+    public float baselineY = 0f;       // the common baseline (e.g. reference plane)
+
+    [Header("Debug Info")]
+    public float lastPercentChange = 0f;
+    public float lastEffectiveScale = 0f;
+    public float lastNewHeight = 0f;
+    public Vector3 lastFinalScale = Vector3.zero;
 
     private bool blocK_color = false;
 
     void SetHeight(Transform cube, float percentChange)
     {
-        // Calcola il fattore di scala effettivo
+        // Calculate the effective scale factor
         float effectiveScale = refscale;
         
         if (useDPIScaling && DPIManager.Instance != null)
@@ -29,7 +39,7 @@ public class LightstreamerCubeAsset : LightstreamerAsset
             float dpiScale = DPIManager.Instance.GetScaleFactor();
             effectiveScale = refscale * dpiScale;
             
-            Debug.Log($"DPI Scaling - Original: {refscale}, DPI Factor: {dpiScale}, Effective: {effectiveScale}");
+            Debug.Log($"DPI Scaling - Original: {refscale}, DPI Factor: {dpiScale}, Before PC correction: {effectiveScale}");
         }
         else if (!useDPIScaling)
         {
@@ -37,30 +47,50 @@ public class LightstreamerCubeAsset : LightstreamerAsset
             Debug.Log($"Manual Scaling - Original: {refscale}, Manual Factor: {manualScaleFactor}, Effective: {effectiveScale}");
         }
         
+        // Apply PC specific correction if enabled
+        if (usePerPCCorrection)
+        {
+            effectiveScale *= pcSpecificCorrection;
+            Debug.Log($"PC Specific Correction Applied: {pcSpecificCorrection}, Final Effective Scale: {effectiveScale}");
+        }
+        
         float newHeight = Mathf.Max(0.1f, Mathf.Abs(percentChange) * effectiveScale);
 
-        Debug.Log("Setting height to: " + newHeight + " (change: " + percentChange + ", scaleFactor: " + effectiveScale + ")");
+        // Save values for debugging
+        lastPercentChange = percentChange;
+        lastEffectiveScale = effectiveScale;
+        lastNewHeight = newHeight;
 
-        // Aggiorna scala
+        Debug.Log($"[{ItemName}] Setting height to: {newHeight:F3} (change: {percentChange:F2}%, effectiveScale: {effectiveScale:F3})");
+
+        // Update scale
         Vector3 scale = cube.localScale;
         scale.y = newHeight;
         cube.localScale = scale;
 
-        // Calcola posizione per ancorare la base alla baseline
+        // Calculate position to anchor the base to the baseline
         Vector3 pos = cube.position;
 
         if (percentChange >= 0)
         {
-            // positivo: base rimane sulla baseline, cresce verso l’alto
+            // positive: base stays on baseline, grows upward
             pos.y = baselineY + newHeight / 2f;
         }
         else
         {
-            // negativo: base rimane sulla baseline, cresce verso il basso
+            // negative: base stays on baseline, grows downward
             pos.y = baselineY - newHeight / 2f;
         }
 
         cube.position = pos;
+
+        // Save final scale for debugging
+        lastFinalScale = cube.localScale;
+
+        // Final log of dimensions after modification
+        Debug.Log($"[{ItemName}] Final dimensions - LocalScale: ({cube.localScale.x:F3}, {cube.localScale.y:F3}, {cube.localScale.z:F3}), " +
+                 $"WorldScale: ({cube.lossyScale.x:F3}, {cube.lossyScale.y:F3}, {cube.lossyScale.z:F3}), " +
+                 $"Position: ({cube.position.x:F2}, {cube.position.y:F2}, {cube.position.z:F2})");
 
         myObj.material.color = StockColorUtils.GetStockColor(percentChange);
     }
@@ -127,9 +157,17 @@ public class LightstreamerCubeAsset : LightstreamerAsset
             if (update.isValueChanged("pct_change"))
             {
                 float change = 1.0F;
-                float.TryParse(update.getValue("pct_change"), out change);
+                string changeValue = update.getValue("pct_change");
+                
+                // Use InvariantCulture to force dot as decimal separator
+                if (!float.TryParse(changeValue, System.Globalization.NumberStyles.Float, 
+                                   System.Globalization.CultureInfo.InvariantCulture, out change))
+                {
+                    Debug.LogWarning($"[{ItemName}] Failed to parse pct_change value: '{changeValue}'");
+                    change = 0f; // default value
+                }
 
-                Debug.Log("Percent change: " + change);
+                Debug.Log($"[{ItemName}] Percent change raw: '{changeValue}' -> parsed: {change}");
 
                 SetHeight(stockCube, change);
             }
@@ -157,24 +195,24 @@ public class LightstreamerCubeAsset : LightstreamerAsset
 
 public static class StockColorUtils {
     /// <summary>
-    /// Restituisce un colore graduale in base alla variazione percentuale.
-    /// Da bianco → verde per valori positivi,
-    /// da bianco → rosso per valori negativi.
-    /// Oltre ±10% il colore rimane al massimo della saturazione.
+    /// Returns a gradual color based on percentage change.
+    /// From white → green for positive values,
+    /// from white → red for negative values.
+    /// Beyond ±10% the color remains at maximum saturation.
     /// </summary>
     public static Color GetStockColor(float percentChange) {
-        // Normalizza intensità (0 = nessun cambiamento, 1 = massimo effetto)
+        // Normalize intensity (0 = no change, 1 = maximum effect)
         float intensity = Mathf.Clamp01(Mathf.Abs(percentChange) / 10f);
 
         Color baseColor;
         Color targetColor;
 
         if (percentChange >= 0) {
-            // da verde scuro → verde pieno
+            // from dark green → full green
             baseColor = new Color(0.8f, 1f, 0.8f); // light green
             targetColor = new Color(0f, 0.3f, 0f); // dark green
         } else {
-            // da rosso scuro → rosso pieno
+            // from dark red → full red
             baseColor = new Color(1f, 0.8f, 0.8f); // light red
             targetColor = new Color(0.3f, 0f, 0f); // dark red
         }

@@ -50,8 +50,10 @@ public class ResolutionDebugUI : MonoBehaviour
         
         debugText = textGO.AddComponent<Text>();
         debugText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-        debugText.fontSize = 14;
+        debugText.fontSize = 11;
         debugText.color = Color.white;
+        debugText.alignment = TextAnchor.UpperLeft;
+        debugText.verticalOverflow = VerticalWrapMode.Overflow;
         
         // Posiziona il testo in alto a sinistra
         RectTransform rectTransform = debugText.GetComponent<RectTransform>();
@@ -59,7 +61,7 @@ public class ResolutionDebugUI : MonoBehaviour
         rectTransform.anchorMax = new Vector2(0, 1);
         rectTransform.pivot = new Vector2(0, 1);
         rectTransform.anchoredPosition = new Vector2(10, -10);
-        rectTransform.sizeDelta = new Vector2(400, 300);
+        rectTransform.sizeDelta = new Vector2(600, 500);
         
         // Aggiungi background
         GameObject bgGO = new GameObject("Background");
@@ -95,20 +97,18 @@ public class ResolutionDebugUI : MonoBehaviour
     
     void UpdateDebugInfo()
     {
-        debugInfo = "=== RESOLUTION DEBUG INFO ===\n";
-        debugInfo += $"Screen Resolution: {Screen.width}x{Screen.height}\n";
-        debugInfo += $"DPI: {Screen.dpi}\n";
-        debugInfo += $"Fullscreen Mode: {Screen.fullScreenMode}\n";
-        debugInfo += $"Native Resolution: {Display.main.systemWidth}x{Display.main.systemHeight}\n";
-        debugInfo += $"Refresh Rate: {Screen.currentResolution.refreshRate}Hz\n";
+        debugInfo = "=== RESOLUTION & DPI INFO ===\n";
+        debugInfo += $"Screen: {Screen.width}x{Screen.height} | Native: {Display.main.systemWidth}x{Display.main.systemHeight}\n";
+        debugInfo += $"DPI: {Screen.dpi} | Fullscreen: {Screen.fullScreenMode} | Refresh: {Screen.currentResolution.refreshRate}Hz\n";
         
         // Info DPI Manager se disponibile
         if (DPIManager.Instance != null)
         {
-            debugInfo += "\n=== DPI MANAGER ===\n";
-            debugInfo += $"Current DPI: {DPIManager.Instance.currentDPI}\n";
-            debugInfo += $"DPI Scale: {DPIManager.Instance.dpiScale:F2}\n";
-            debugInfo += $"Scale Factor: {DPIManager.Instance.GetScaleFactor():F2}\n";
+            debugInfo += $"DPI Manager - Current: {DPIManager.Instance.currentDPI} | Scale: {DPIManager.Instance.dpiScale:F2} | Factor: {DPIManager.Instance.GetScaleFactor():F2}\n";
+            if (DPIManager.Instance.useManualCorrection)
+            {
+                debugInfo += $"Manual Correction: {DPIManager.Instance.manualScaleCorrection:F2}\n";
+            }
         }
         
         // Info Resolution Manager se disponibile
@@ -141,13 +141,61 @@ public class ResolutionDebugUI : MonoBehaviour
             }
         }
         
-        debugInfo += $"\n=== SYSTEM INFO ===\n";
-        debugInfo += $"OS: {SystemInfo.operatingSystem}\n";
-        debugInfo += $"GPU: {SystemInfo.graphicsDeviceName}\n";
-        debugInfo += $"GPU Memory: {SystemInfo.graphicsMemorySize}MB\n";
+        // Info Cubi LightstreamerCubeAsset
+        LightstreamerCubeAsset[] cubes = FindObjectsOfType<LightstreamerCubeAsset>();
+        if (cubes.Length > 0)
+        {
+            debugInfo += "\n=== LIGHTSTREAMER CUBES ===\n";
+            debugInfo += $"Number of Cubes: {cubes.Length}\n";
+            
+            for (int i = 0; i < cubes.Length; i++)
+            {
+                LightstreamerCubeAsset cube = cubes[i];
+                if (cube.stockCube != null)
+                {
+                    Vector3 scale = cube.stockCube.localScale;
+                    Vector3 position = cube.stockCube.position;
+                    Vector3 worldScale = cube.stockCube.lossyScale;
+                    
+                    debugInfo += $"[{i + 1}] {cube.ItemName} - Height: {scale.y:F3} (Change: {cube.lastPercentChange:F1}%)\n";
+                    debugInfo += $"    LocalScale: ({scale.x:F2},{scale.y:F3},{scale.z:F2}) Pos: ({position.x:F1},{position.y:F2},{position.z:F1})\n";
+                    debugInfo += $"    EffectiveScale: {cube.lastEffectiveScale:F3} = RefScale: {cube.refscale:F2}";
+                    
+                    if (cube.useDPIScaling && DPIManager.Instance != null)
+                    {
+                        debugInfo += $" × DPI: {DPIManager.Instance.GetScaleFactor():F2}";
+                    }
+                    if (cube.usePerPCCorrection)
+                    {
+                        debugInfo += $" × PC: {cube.pcSpecificCorrection:F2}";
+                    }
+                    debugInfo += "\n";
+                }
+            }
+        }
+
+        debugInfo += $"\n=== SYSTEM ===\n";
+        debugInfo += $"OS: {GetOSShortName(SystemInfo.operatingSystem)} | GPU: {GetGPUShortName(SystemInfo.graphicsDeviceName)} | VRAM: {SystemInfo.graphicsMemorySize}MB\n";
         
         debugInfo += $"\n=== CONTROLS ===\n";
-        debugInfo += $"Press {toggleKey} to toggle this debug info\n";
-        debugInfo += $"Press Alt+Enter to toggle fullscreen\n";
+        debugInfo += $"F1: Toggle Debug | Alt+Enter: Toggle Fullscreen\n";
+    }
+    
+    string GetOSShortName(string fullOS)
+    {
+        if (fullOS.Contains("Windows 11")) return "Win11";
+        if (fullOS.Contains("Windows 10")) return "Win10";
+        if (fullOS.Contains("Windows")) return "Win";
+        return "Other";
+    }
+    
+    string GetGPUShortName(string fullGPU)
+    {
+        if (fullGPU.Contains("NVIDIA GeForce RTX")) return "RTX" + fullGPU.Substring(fullGPU.IndexOf("RTX") + 3, 4);
+        if (fullGPU.Contains("NVIDIA GeForce GTX")) return "GTX" + fullGPU.Substring(fullGPU.IndexOf("GTX") + 3, 4);
+        if (fullGPU.Contains("NVIDIA")) return "NVIDIA";
+        if (fullGPU.Contains("AMD Radeon")) return "AMD";
+        if (fullGPU.Contains("Intel")) return "Intel";
+        return "Other";
     }
 }
